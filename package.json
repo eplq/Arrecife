@@ -1,0 +1,22 @@
+{
+  "name": "arrecife",
+  "version": "0.0.1",
+  "description": "Arrecife es un ERP",
+  "private": true,
+  "devDependencies": {
+    "typescript": "4.9.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eplq/Arrecife.git"
+  },
+  "author": "eplq",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/eplq/Arrecife/issues"
+  },
+  "homepage": "https://github.com/eplq/Arrecife#readme"
+}

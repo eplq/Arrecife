@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "baseUrl": ".",
+        "moduleResolution": "nodenext",
+        "module": "CommonJS",
+        "target": "Es2018",
+        "sourceMap": true,
+        "lib": [
+            "ES2018"
+        ],
+        "alwaysStrict": true,
+        "esModuleInterop": true,
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noImplicitOverride": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "resolveJsonModule": true,
+        "paths": {
+            "@arrecife/*": ["packages/*/src/index.ts"]
+        }
+    },
+    "references": [
+        {"path": "./packages/server"}
+    ],
+    "exclude": ["node_modules", "dist", "*.d.ts"]
+}
