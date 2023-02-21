@@ -4,6 +4,7 @@
         "composite": true,
         "declaration": true,
         "declarationMap": true,
+        "strict": true,
         "rootDir": ".",
         "outDir": "./dist"
     },
