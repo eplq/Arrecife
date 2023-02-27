@@ -4,6 +4,8 @@
         "composite": true,
         "declaration": true,
         "declarationMap": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
         "strict": true,
         "rootDir": ".",
         "outDir": "./dist"
