@@ -1,8 +1,10 @@
 {
-  "semi": true,
-  "tabWidth": 4,
-  "trailingComma": "none",
-  "importOrder": ["^@arrecife/(.*)$"],
-  "importOrderSeparation": true,
-  "singleQuote": true
+    "semi": true,
+    "tabWidth": 4,
+    "trailingComma": "none",
+    "importOrder": ["^@arrecife/(.*)$"],
+    "importOrderSeparation": true,
+    "decoratorsBeforeExport": true,
+    "importOrderParserPlugins": ["typescript", "decorators-legacy"],
+    "singleQuote": true
 }
