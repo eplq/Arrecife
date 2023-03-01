@@ -5,7 +5,11 @@
     "private": true,
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "nodemon"
+        "dev": "nodemon",
+        "build": "tsc -b",
+        "run": "npm run build && node ./dist/src/index.js",
+        "typeorm": "typeorm-ts-node-esm",
+        "migrate": "typeorm-ts-node-esm migration:run -- -d src/db.ts"
     },
     "repository": {
         "type": "git",
