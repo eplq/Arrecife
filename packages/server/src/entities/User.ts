@@ -5,7 +5,9 @@ import { Person, PersonSchema } from './Person';
 
 @Entity()
 export class User extends Person {
-    @Column()
+    @Column({
+        unique: true
+    })
     email!: string;
 
     @Column()
