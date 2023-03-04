@@ -10,13 +10,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Sección Person
 model Person {
-  id       Int    @id @default(autoincrement())
-  name     String
-  surnames String
-  User     User[]
+  id           Int           @id @default(autoincrement())
+  name         String
+  surnames     String
+  User         User?
+  phones       PersonPhone[]
+  emails       PersonEmail[]
+  userPersonId Int
 }
 
+model PersonPhone {
+  personId Int
+  person   Person @relation(fields: [personId], references: [id])
+
+  phone String
+
+  @@unique([personId, phone])
+}
+
+model PersonEmail {
+  personId Int
+  person   Person @relation(fields: [personId], references: [id])
+
+  email String
+
+  @@unique([personId, email])
+}
+
+// Sección User
 model User {
   personId Int    @id
   person   Person @relation(fields: [personId], references: [id])
