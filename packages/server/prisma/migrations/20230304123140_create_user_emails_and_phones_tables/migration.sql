@@ -1,12 +1,3 @@
-/*
-  Warnings:
-
-  - Added the required column `userPersonId` to the `Person` table without a default value. This is not possible if the table is not empty.
-
-*/
--- AlterTable
-ALTER TABLE `Person` ADD COLUMN `userPersonId` INTEGER NOT NULL;
-
 -- CreateTable
 CREATE TABLE `PersonPhone` (
     `personId` INTEGER NOT NULL,
