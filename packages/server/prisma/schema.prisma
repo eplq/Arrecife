@@ -12,13 +12,12 @@ datasource db {
 
 // Sección Person
 model Person {
-  id           Int           @id @default(autoincrement())
-  name         String
-  surnames     String
-  User         User?
-  phones       PersonPhone[]
-  emails       PersonEmail[]
-  userPersonId Int
+  id       Int           @id @default(autoincrement())
+  name     String
+  surnames String
+  User     User?
+  phones   PersonPhone[]
+  emails   PersonEmail[]
 }
 
 model PersonPhone {
