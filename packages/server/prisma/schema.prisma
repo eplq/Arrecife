@@ -14,4 +14,13 @@ model Person {
   id       Int    @id @default(autoincrement())
   name     String
   surnames String
+  User     User[]
+}
+
+model User {
+  personId Int    @id
+  person   Person @relation(fields: [personId], references: [id])
+
+  email    String
+  password String
 }
