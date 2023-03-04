@@ -15,7 +15,7 @@ model Person {
   id       Int           @id @default(autoincrement())
   name     String
   surnames String
-  User     User?
+  user     User?
   phones   PersonPhone[]
   emails   PersonEmail[]
 }
