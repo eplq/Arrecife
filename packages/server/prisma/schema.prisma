@@ -148,7 +148,7 @@ model Brand {
 
 // Sección Product
 model Product {
-  code          String @db.VarChar(40) // EAN
+  code          String @unique @db.VarChar(40) // EAN
   internal_code String @db.VarChar(30)
 
   cost  Int?
@@ -157,5 +157,37 @@ model Product {
   brandId Int
   brand   Brand @relation(fields: [brandId], references: [id])
 
+  storagedIn ProductStock[]
+
   @@id([code, brandId])
+}
+
+// Sección Building
+// Vamos a abstraer Store y Warehouse para simplificar el control del inventario
+model Building {
+  id      Int    @id
+  name    String @db.VarChar(70)
+  address String @db.VarChar(70)
+  phone   String @db.VarChar(18)
+
+  type BuildingType @default(STORE)
+
+  productStock ProductStock[]
+}
+
+enum BuildingType {
+  WAREHOUSE
+  STORE
+}
+
+model ProductStock {
+  buildingId Int
+  building   Building @relation(fields: [buildingId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [code])
+
+  quantity Int @default(0)
+
+  @@id([buildingId, productId])
 }
