@@ -92,6 +92,8 @@ model Company {
 
   sellerInvoices Invoice[] @relation(name: "sellerCompany")
   buyerInvoices  Invoice[] @relation(name: "buyerCompany")
+
+  buildings Building[]
 }
 
 // Sección PaymentPlan
@@ -182,6 +184,9 @@ model Building {
   phone   String @db.VarChar(18)
 
   type BuildingType @default(STORE)
+
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
 
   productStock ProductStock[]
 }
