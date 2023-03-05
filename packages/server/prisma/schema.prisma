@@ -44,7 +44,7 @@ model User {
   personId Int    @id
   person   Person @relation(fields: [personId], references: [id])
 
-  email    String @db.VarChar(60)
+  email    String @unique @db.VarChar(60)
   password String @db.VarChar(70)
 
   companies UserCompany[]
