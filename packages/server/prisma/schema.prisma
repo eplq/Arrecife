@@ -12,12 +12,13 @@ datasource db {
 
 // Sección Person
 model Person {
-  id       Int           @id @default(autoincrement())
-  name     String        @db.VarChar(45)
-  surnames String        @db.VarChar(75)
-  user     User?
-  phones   PersonPhone[]
-  emails   PersonEmail[]
+  id        Int           @id @default(autoincrement())
+  name      String        @db.VarChar(45)
+  surnames  String        @db.VarChar(75)
+  user      User?
+  phones    PersonPhone[]
+  emails    PersonEmail[]
+  companies Contact[]
 }
 
 model PersonPhone {
@@ -61,6 +62,18 @@ model UserCompany {
   @@id([userId, companyId])
 }
 
+model Contact {
+  personId Int
+  person   Person @relation(fields: [personId], references: [id])
+
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+
+  role String @db.VarChar(50)
+
+  @@id([personId, companyId])
+}
+
 // Sección Company
 model Company {
   id      Int    @id
@@ -72,6 +85,7 @@ model Company {
 
   paymentPlans PaymentPlan[]
   taxes        Tax[]
+  contacts     Contact[]
 }
 
 // Sección PaymentPlan
