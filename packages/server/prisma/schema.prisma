@@ -129,7 +129,7 @@ model Provider {
   preferredPaymentPlanId Int
   preferredPaymentPlan   PaymentPlan @relation(references: [id], fields: [preferredPaymentPlanId])
 
-  preferredGeneralDiscount Float? @default(0)
+  preferredGeneralDiscount Int? @default(0)
 
   brands Brand[]
 
@@ -142,5 +142,20 @@ model Brand {
   name String @db.VarChar(150)
 
   providerId Int
-  provider   Provider @relation(fields: [providerId], references: [companyId])
+  provider   Provider  @relation(fields: [providerId], references: [companyId])
+  products   Product[]
+}
+
+// Sección Product
+model Product {
+  code          String @db.VarChar(40) // EAN
+  internal_code String @db.VarChar(30)
+
+  cost  Int?
+  price Int
+
+  brandId Int
+  brand   Brand @relation(fields: [brandId], references: [id])
+
+  @@id([code, brandId])
 }
