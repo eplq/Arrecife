@@ -13,8 +13,8 @@ datasource db {
 // Sección Person
 model Person {
   id       Int           @id @default(autoincrement())
-  name     String
-  surnames String
+  name     String        @db.VarChar(45)
+  surnames String        @db.VarChar(75)
   user     User?
   phones   PersonPhone[]
   emails   PersonEmail[]
@@ -24,7 +24,7 @@ model PersonPhone {
   personId Int
   person   Person @relation(fields: [personId], references: [id])
 
-  phone String
+  phone String @db.VarChar(18)
 
   @@unique([personId, phone])
 }
@@ -33,7 +33,7 @@ model PersonEmail {
   personId Int
   person   Person @relation(fields: [personId], references: [id])
 
-  email String
+  email String @db.VarChar(65)
 
   @@unique([personId, email])
 }
@@ -43,8 +43,8 @@ model User {
   personId Int    @id
   person   Person @relation(fields: [personId], references: [id])
 
-  email    String
-  password String
+  email    String @db.VarChar(60)
+  password String @db.VarChar(70)
 
   companies UserCompany[]
 }
