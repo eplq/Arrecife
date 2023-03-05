@@ -76,7 +76,7 @@ model Contact {
 
 // Sección Company
 model Company {
-  id      Int    @id
+  id      Int    @id @default(autoincrement())
   name    String @db.VarChar(80)
   NIF     String @db.VarChar(10)
   address String @db.VarChar(70)
@@ -96,7 +96,7 @@ model Company {
 
 // Sección PaymentPlan
 model PaymentPlan {
-  id   Int    @id
+  id   Int    @id @default(autoincrement())
   name String @db.VarChar(45)
 
   companyId Int
@@ -120,7 +120,7 @@ model PaymentPlanPayment {
 
 // Sección Tax
 model Tax {
-  id   Int    @id
+  id   Int    @id @default(autoincrement())
   name String @db.VarChar(45)
   rate Int // percentage from 0 to 100
 
@@ -147,7 +147,7 @@ model Provider {
 
 // Sección Brand
 model Brand {
-  id   Int    @id
+  id   Int    @id @default(autoincrement())
   name String @db.VarChar(150)
 
   providerId Int
@@ -176,7 +176,7 @@ model Product {
 // Sección Building
 // Vamos a abstraer Store y Warehouse para simplificar el control del inventario
 model Building {
-  id      Int    @id
+  id      Int    @id @default(autoincrement())
   name    String @db.VarChar(70)
   address String @db.VarChar(70)
   phone   String @db.VarChar(18)
