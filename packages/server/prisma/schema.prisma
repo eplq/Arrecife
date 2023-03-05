@@ -87,6 +87,8 @@ model Company {
   taxes        Tax[]
   contacts     Contact[]
   provider     Provider?
+
+  dispatchNotes DispatchNote[]
 }
 
 // Sección PaymentPlan
@@ -157,7 +159,8 @@ model Product {
   brandId Int
   brand   Brand @relation(fields: [brandId], references: [id])
 
-  storagedIn ProductStock[]
+  storagedIn    ProductStock[]
+  dispatchNotes ProductsDispatchNotes[]
 
   @@id([code, brandId])
 }
@@ -190,4 +193,29 @@ model ProductStock {
   quantity Int @default(0)
 
   @@id([buildingId, productId])
+}
+
+// Sección DispatchNote
+model DispatchNote {
+  id         Int      @id @default(autoincrement())
+  number     String   @db.VarChar(40)
+  date       DateTime
+  dispatched DateTime @default(now())
+
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+
+  products ProductsDispatchNotes[]
+}
+
+model ProductsDispatchNotes {
+  productCode String
+  product     Product @relation(fields: [productCode], references: [code])
+
+  dispatchNoteId Int
+  dispatchNote   DispatchNote @relation(fields: [dispatchNoteId], references: [id])
+
+  quantity Int @default(0)
+
+  @@id([productCode, dispatchNoteId])
 }
