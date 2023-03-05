@@ -89,6 +89,9 @@ model Company {
   provider     Provider?
 
   dispatchNotes DispatchNote[]
+
+  sellerInvoices Invoice[] @relation(name: "sellerCompany")
+  buyerInvoices  Invoice[] @relation(name: "buyerCompany")
 }
 
 // Sección PaymentPlan
@@ -101,6 +104,7 @@ model PaymentPlan {
 
   payments  PaymentPlanPayment[]
   providers Provider[]
+  invoices  Invoice[]
 }
 
 model PaymentPlanPayment {
@@ -116,11 +120,14 @@ model PaymentPlanPayment {
 
 // Sección Tax
 model Tax {
-  id        Int     @id
-  name      String  @db.VarChar(45)
-  rate      Int // percentage from 0 to 100
+  id   Int    @id
+  name String @db.VarChar(45)
+  rate Int // percentage from 0 to 100
+
   companyId Int
   company   Company @relation(fields: [companyId], references: [id])
+
+  invoices Invoice[]
 }
 
 // Sección Provider
@@ -161,6 +168,7 @@ model Product {
 
   storagedIn    ProductStock[]
   dispatchNotes ProductsDispatchNotes[]
+  invoices      InvoiceProducts[]
 
   @@id([code, brandId])
 }
@@ -218,4 +226,55 @@ model ProductsDispatchNotes {
   quantity Int @default(0)
 
   @@id([productCode, dispatchNoteId])
+}
+
+// Sección Invoice
+model Invoice {
+  id Int @id @default(autoincrement())
+
+  number    String   @db.VarChar(30)
+  date      DateTime
+  subtotal  Int
+  discount  Int
+  netAmount Int
+  total     Int
+
+  sellerId Int
+  seller   Company @relation(fields: [sellerId], references: [id], name: "sellerCompany")
+
+  buyerId Int
+  buyer   Company @relation(fields: [buyerId], references: [id], name: "buyerCompany")
+
+  paymentPlanId Int
+  paymentPlan   PaymentPlan @relation(fields: [paymentPlanId], references: [id])
+
+  taxes Tax[]
+
+  dueDates DueDate[]
+  products InvoiceProducts[]
+
+  @@unique([number, sellerId])
+}
+
+model DueDate {
+  invoiceId Int
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+
+  date DateTime
+
+  amount Int
+
+  @@id([invoiceId, date])
+}
+
+model InvoiceProducts {
+  invoiceId Int
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [code])
+
+  quantity Int @default(0)
+
+  @@id([invoiceId, productId])
 }
