@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE `Brand` (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(150) NOT NULL,
     `providerId` INTEGER NOT NULL,
 

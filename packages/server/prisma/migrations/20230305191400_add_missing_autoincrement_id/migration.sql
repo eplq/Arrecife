@@ -16,8 +16,12 @@
 
     No obstante, la solución óptima es agregar el autoincremento en las migraciones previas correspondientes
     a cada modelo. Así se solucionará de una manera mucho más limpia.
+
+    ACTUALIZACIÓN: Una vez corregidas la migraciones originales, carece de sentido
+    ejecutar esta.
 */
 
+/*
 LOCK TABLES Brand WRITE, Building WRITE, Company WRITE, PaymentPlan WRITE, Tax WRITE;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -38,3 +42,4 @@ ALTER TABLE `Tax` MODIFY `id` INTEGER NOT NULL AUTO_INCREMENT;
 
 SET FOREIGN_KEY_CHECKS = 1;
 UNLOCK TABLES;
+*/

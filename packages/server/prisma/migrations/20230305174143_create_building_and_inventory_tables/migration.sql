@@ -6,7 +6,7 @@
 */
 -- CreateTable
 CREATE TABLE `Building` (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(70) NOT NULL,
     `address` VARCHAR(70) NOT NULL,
     `phone` VARCHAR(18) NOT NULL,

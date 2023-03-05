@@ -9,7 +9,7 @@ CREATE TABLE `UserCompany` (
 
 -- CreateTable
 CREATE TABLE `Company` (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(80) NOT NULL,
     `NIF` VARCHAR(10) NOT NULL,
     `address` VARCHAR(70) NOT NULL,

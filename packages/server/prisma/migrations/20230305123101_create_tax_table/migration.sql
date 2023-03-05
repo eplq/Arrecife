@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE `Tax` (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(45) NOT NULL,
     `rate` INTEGER NOT NULL,
     `companyId` INTEGER NOT NULL,

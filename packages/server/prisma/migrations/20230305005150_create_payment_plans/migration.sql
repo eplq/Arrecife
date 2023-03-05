@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE `PaymentPlan` (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(45) NOT NULL,
     `companyId` INTEGER NOT NULL,
 
