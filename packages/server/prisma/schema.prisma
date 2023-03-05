@@ -131,5 +131,16 @@ model Provider {
 
   preferredGeneralDiscount Float? @default(0)
 
+  brands Brand[]
+
   @@id([companyId, preferredPaymentPlanId])
+}
+
+// Sección Brand
+model Brand {
+  id   Int    @id
+  name String @db.VarChar(150)
+
+  providerId Int
+  provider   Provider @relation(fields: [providerId], references: [companyId])
 }
