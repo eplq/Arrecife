@@ -69,4 +69,28 @@ model Company {
   address String @db.VarChar(70)
 
   users UserCompany[]
+
+  paymentPlans PaymentPlan[]
+}
+
+// Sección PaymentPlan
+model PaymentPlan {
+  id   Int    @id
+  name String @db.VarChar(45)
+
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+
+  payments PaymentPlanPayment[]
+}
+
+model PaymentPlanPayment {
+  paymentPlanId Int
+  paymentPlan   PaymentPlan @relation(fields: [paymentPlanId], references: [id])
+
+  days Int
+
+  percentage Int
+
+  @@id([paymentPlanId, days])
 }
