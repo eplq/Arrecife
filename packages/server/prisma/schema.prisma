@@ -86,6 +86,7 @@ model Company {
   paymentPlans PaymentPlan[]
   taxes        Tax[]
   contacts     Contact[]
+  provider     Provider?
 }
 
 // Sección PaymentPlan
@@ -96,7 +97,8 @@ model PaymentPlan {
   companyId Int
   company   Company @relation(fields: [companyId], references: [id])
 
-  payments PaymentPlanPayment[]
+  payments  PaymentPlanPayment[]
+  providers Provider[]
 }
 
 model PaymentPlanPayment {
@@ -117,4 +119,17 @@ model Tax {
   rate      Int // percentage from 0 to 100
   companyId Int
   company   Company @relation(fields: [companyId], references: [id])
+}
+
+// Sección Provider
+model Provider {
+  companyId Int     @unique
+  company   Company @relation(fields: [companyId], references: [id])
+
+  preferredPaymentPlanId Int
+  preferredPaymentPlan   PaymentPlan @relation(references: [id], fields: [preferredPaymentPlanId])
+
+  preferredGeneralDiscount Float? @default(0)
+
+  @@id([companyId, preferredPaymentPlanId])
 }
