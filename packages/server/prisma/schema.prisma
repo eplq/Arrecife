@@ -219,6 +219,7 @@ model DispatchNote {
   company   Company @relation(fields: [companyId], references: [id])
 
   products ProductsDispatchNotes[]
+  Invoice  Invoice?
 }
 
 model ProductsDispatchNotes {
@@ -253,8 +254,10 @@ model Invoice {
   paymentPlanId Int
   paymentPlan   PaymentPlan @relation(fields: [paymentPlanId], references: [id])
 
-  taxes Tax[]
+  dispatchNoteId Int           @unique
+  dispatchNote   DispatchNote? @relation(fields: [dispatchNoteId], references: [id])
 
+  taxes    Tax[]
   dueDates DueDate[]
   products InvoiceProducts[]
 
