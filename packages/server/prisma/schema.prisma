@@ -71,6 +71,7 @@ model Company {
   users UserCompany[]
 
   paymentPlans PaymentPlan[]
+  taxes        Tax[]
 }
 
 // Sección PaymentPlan
@@ -93,4 +94,13 @@ model PaymentPlanPayment {
   percentage Int
 
   @@id([paymentPlanId, days])
+}
+
+// Sección Tax
+model Tax {
+  id        Int     @id
+  name      String  @db.VarChar(45)
+  rate      Int // percentage from 0 to 100
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
 }
