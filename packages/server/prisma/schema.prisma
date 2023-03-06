@@ -48,6 +48,16 @@ model User {
   password String @db.VarChar(70)
 
   companies UserCompany[]
+
+  session UserSession?
+}
+
+model UserSession {
+  userId Int  @id @unique
+  user   User @relation(fields: [userId], references: [personId])
+
+  token   String
+  expires DateTime
 }
 
 model UserCompany {
