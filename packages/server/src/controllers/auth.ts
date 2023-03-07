@@ -1,5 +1,6 @@
 import type { PrismaClient } from '@prisma/client';
 
+import generateHash from '../auth/hash';
 import { UserSchema, UserType } from '../schemas/user';
 
 export default async function registerUser(
@@ -22,7 +23,7 @@ export default async function registerUser(
     user = await prisma.user.create({
         data: {
             email: userInput.email,
-            password: userInput.password,
+            password: await generateHash(userInput.password),
             person: {
                 create: {
                     name: userInput.name,
