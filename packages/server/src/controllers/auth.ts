@@ -1,6 +1,9 @@
 import type { PrismaClient } from '@prisma/client';
+import { compare } from 'bcrypt';
 
 import generateHash from '../auth/hash';
+import addTime from '../auth/time';
+import generateToken from '../auth/utils';
 import { UserSchema, UserType } from '../schemas/user';
 
 export default async function registerUser(
@@ -35,3 +38,38 @@ export default async function registerUser(
 
     return true;
 }
+
+export async function login(
+    email: string,
+    password: string,
+    prisma: PrismaClient
+): Promise<string | false> {
+    const user = await prisma.user.findFirst({
+        where: {
+            email
+        }
+    });
+
+    if (!user) return false;
+
+    if ((await compare(password, user.password)) === false) return false;
+
+    const session = await prisma.userSession.upsert({
+        where: {
+            userId: user.personId
+        },
+        create: {
+            userId: user.personId,
+            expires: addTime(86400),
+            token: generateToken()
+        },
+        update: {
+            expires: addTime(86400),
+            token: generateToken()
+        }
+    });
+
+    return session.token;
+}
+
+// export async function isValidSession(token: string) {}
