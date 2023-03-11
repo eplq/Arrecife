@@ -6,10 +6,7 @@ import addTime from '../auth/time';
 import generateToken from '../auth/utils';
 import { UserSchema, UserType } from '../schemas/user';
 
-export default async function registerUser(
-    userInput: UserType,
-    prisma: PrismaClient
-) {
+export async function registerUser(userInput: UserType, prisma: PrismaClient) {
     const checkResult = UserSchema.safeParse(userInput);
 
     if (!checkResult.success) return false;
