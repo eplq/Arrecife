@@ -1,5 +1,6 @@
 import type { PrismaClient } from '@prisma/client';
 import { compare } from 'bcrypt';
+import isEmail from 'validator/lib/isEmail';
 
 import generateHash from '../auth/hash';
 import addTime from '../auth/time';
@@ -41,6 +42,8 @@ export async function login(
     password: string,
     prisma: PrismaClient
 ): Promise<string | false> {
+    if (isEmail(email) === false) return false;
+
     const user = await prisma.user.findFirst({
         where: {
             email
