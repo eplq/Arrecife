@@ -12,8 +12,7 @@ export async function registerUser(userInput: UserType, prisma: PrismaClient) {
 
     if (!checkResult.success) return false;
 
-    let user;
-    user = await prisma.user.findFirst({
+    let user = await prisma.user.findFirst({
         where: {
             email: userInput.email
         }
@@ -34,7 +33,7 @@ export async function registerUser(userInput: UserType, prisma: PrismaClient) {
         }
     });
 
-    return true;
+    return user !== null;
 }
 
 export async function login(
