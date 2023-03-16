@@ -39,9 +39,11 @@ export async function registerUser(userInput: UserType, prisma: PrismaClient) {
 export async function login(
     email: string,
     password: string,
-    prisma: PrismaClient
+    prisma: PrismaClient,
+    tokenExpiration: number = 86400
 ): Promise<string | false> {
     if (isEmail(email) === false) return false;
+    if (tokenExpiration < 0) return false;
 
     const user = await prisma.user.findFirst({
         where: {
@@ -59,16 +61,14 @@ export async function login(
         },
         create: {
             userId: user.personId,
-            expires: addTime(86400),
+            expires: addTime(tokenExpiration),
             token: generateToken()
         },
         update: {
-            expires: addTime(86400),
+            expires: addTime(tokenExpiration),
             token: generateToken()
         }
     });
 
     return session.token;
 }
-
-// export async function isValidSession(token: string) {}
