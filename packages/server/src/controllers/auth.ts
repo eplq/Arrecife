@@ -72,3 +72,17 @@ export async function login(
 
     return session.token;
 }
+
+export async function isValidSession(token: string, prisma: PrismaClient) {
+    if (!token) return false;
+
+    const session = await prisma.userSession.findFirst({
+        where: {
+            token
+        }
+    });
+
+    if (!session) return false;
+
+    return session.expires > new Date();
+}
