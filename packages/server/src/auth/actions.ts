@@ -2,10 +2,10 @@ import type { PrismaClient } from '@prisma/client';
 import { compare } from 'bcrypt';
 import isEmail from 'validator/lib/isEmail';
 
-import generateHash from '../auth/hash';
-import addTime from '../auth/time';
-import generateToken from '../auth/utils';
 import { UserSchema, UserType } from '../schemas/user';
+import generateHash from './hash';
+import addTime from './time';
+import generateToken from './utils';
 
 export async function registerUser(userInput: UserType, prisma: PrismaClient) {
     const checkResult = UserSchema.safeParse(userInput);
