@@ -86,3 +86,38 @@ export async function isValidSession(token: string, prisma: PrismaClient) {
 
     return session.expires > new Date();
 }
+
+export async function getSession(
+    token: string,
+    prisma: PrismaClient
+): Promise<(Omit<UserType, 'password'> & { id: number }) | null> {
+    if (!token) return null;
+
+    if (!isValidSession(token, prisma)) return null;
+
+    const session = await prisma.userSession.findFirst({
+        where: {
+            token
+        }
+    });
+
+    if (!session) return null;
+
+    const user = await prisma.user.findFirst({
+        where: {
+            personId: session.userId
+        },
+        include: {
+            person: true
+        }
+    });
+
+    if (!user) return null;
+
+    return {
+        id: user.personId,
+        name: user.person.name,
+        surnames: user.person.surnames,
+        email: user.email
+    };
+}
