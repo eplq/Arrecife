@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "test": "jest -i",
+    "test:watch": "jest -i --watchAll",
     "dev": "nodemon",
     "build": "tsc -b",
     "run": "npm run build && node ./dist/src/index.js"
