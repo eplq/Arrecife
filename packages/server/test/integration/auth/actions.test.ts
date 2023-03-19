@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-import { login, registerUser } from '../../../src/auth/actions';
+import { isValidSession, login, registerUser } from '../../../src/auth/actions';
 
 const prisma = new PrismaClient();
 
@@ -82,5 +82,41 @@ describe('login', () => {
             prisma
         );
         expect(typeof loginResult).toBe('string');
+    });
+});
+
+describe('session', () => {
+    afterEach(() => {
+        jest.useFakeTimers().setSystemTime(new Date());
+    });
+
+    test('no token', async () => {
+        const result = await isValidSession('', prisma);
+        expect(result).toBeFalsy();
+    });
+
+    test('no session', async () => {
+        const result = await isValidSession('nosession', prisma);
+        expect(result).toBeFalsy();
+    });
+
+    test('valid session', async () => {
+        const userSession = await prisma.userSession.findFirst();
+        const token = userSession?.token!;
+
+        const result = await isValidSession(token, prisma);
+        expect(result).toBeTruthy();
+    });
+
+    test('invalid session', async () => {
+        const userSession = await prisma.userSession.findFirst();
+        const token = userSession?.token!;
+
+        const day = 1000 * 60 * 60 * 24;
+        const future = new Date(new Date().getTime() + 3 * day);
+        jest.useFakeTimers().setSystemTime(future);
+
+        const result = await isValidSession(token, prisma);
+        expect(result).toBeFalsy();
     });
 });
