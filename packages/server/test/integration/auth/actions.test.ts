@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-import { registerUser } from '../../../src/auth/actions';
+import { login, registerUser } from '../../../src/auth/actions';
 
 const prisma = new PrismaClient();
 
@@ -52,5 +52,35 @@ describe('register', () => {
         );
 
         expect(registerResult).toBeFalsy();
+    });
+});
+
+describe('login', () => {
+    test('invalid email', async () => {
+        const loginResult = await login('invalidemail', 'aaaa', prisma);
+        expect(loginResult).toBeFalsy();
+    });
+
+    test('invalid token expiration time', async () => {
+        const loginResult = await login('a@example.com', 'aaaa', prisma, -5);
+        expect(loginResult).toBeFalsy();
+    });
+
+    test('no user', async () => {
+        const loginResult = await login(
+            'inexistentemail@example.com',
+            'unacontraseñacualquiera',
+            prisma
+        );
+        expect(loginResult).toBeFalsy();
+    });
+
+    test('successful login', async () => {
+        const loginResult = await login(
+            'a@example.com',
+            'unacontraseñacualquiera',
+            prisma
+        );
+        expect(typeof loginResult).toBe('string');
     });
 });
