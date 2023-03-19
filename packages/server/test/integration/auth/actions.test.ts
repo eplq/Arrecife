@@ -1,6 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
-import { isValidSession, login, registerUser } from '../../../src/auth/actions';
+import {
+    getSession,
+    isValidSession,
+    login,
+    registerUser
+} from '../../../src/auth/actions';
 
 const prisma = new PrismaClient();
 
@@ -118,5 +123,30 @@ describe('session', () => {
 
         const result = await isValidSession(token, prisma);
         expect(result).toBeFalsy();
+    });
+});
+
+describe('get session', () => {
+    test('no token', async () => {
+        const result = await getSession('', prisma);
+        expect(result).toBeNull();
+    });
+
+    test('invalid token', async () => {
+        const result = await getSession('nosession', prisma);
+        expect(result).toBeNull();
+    });
+
+    test('valid session', async () => {
+        const userSession = await prisma.userSession.findFirst();
+        const token = userSession?.token!;
+
+        const result = await getSession(token, prisma);
+        expect(result).toMatchObject({
+            name: 'aleatorio',
+            surnames: 'aleatorio',
+            email: 'a@example.com',
+            id: 1
+        });
     });
 });
