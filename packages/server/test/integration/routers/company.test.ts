@@ -1,13 +1,20 @@
 import { PrismaClient } from '@prisma/client';
 
+import companyRouter from '../../../src/routers/company';
+import resetDB from '../../utils';
+
 const prisma = new PrismaClient();
+const caller = companyRouter.createCaller({
+    session: {
+        id: 1,
+        email: 'a@a.com',
+        name: 'asd',
+        surnames: 'asd'
+    }
+});
 
 beforeAll(async () => {
-    await prisma.userCompany.deleteMany();
-    await prisma.company.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.person.deleteMany();
-    await prisma.$queryRaw`ALTER TABLE Person AUTO_INCREMENT = 0`;
+    await resetDB(prisma);
 
     const user = await prisma.user.create({
         data: {
@@ -19,23 +26,32 @@ beforeAll(async () => {
         }
     });
 
-    const company = await prisma.company.create({
+    await prisma.company.create({
         data: {
             NIF: '12345678A',
             name: 'ASD SL',
-            address: 'Calle Asd, Bajo'
-        }
-    });
-
-    await prisma.userCompany.create({
-        data: {
-            company,
-            user,
-            managesIt: false
+            address: 'Calle Asd, Bajo',
+            users: {
+                create: {
+                    userId: user.personId,
+                    managesIt: false
+                }
+            }
         }
     });
 });
 
 describe('companies', () => {
-    it('get all user companies', async () => {});
+    it('get all user companies', async () => {
+        const companies = await caller.companies();
+
+        expect(companies).toStrictEqual([
+            {
+                NIF: '12345678A',
+                name: 'ASD SL',
+                address: 'Calle Asd, Bajo',
+                id: 1
+            }
+        ]);
+    });
 });
