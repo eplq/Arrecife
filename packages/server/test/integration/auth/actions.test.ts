@@ -6,14 +6,12 @@ import {
     login,
     registerUser
 } from '../../../src/auth/actions';
+import resetDB from '../../utils';
 
 const prisma = new PrismaClient();
 
 beforeAll(async () => {
-    await prisma.userSession.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.person.deleteMany();
-    await prisma.$queryRaw`ALTER TABLE Person AUTO_INCREMENT = 0`;
+    await resetDB(prisma);
 });
 
 describe('register', () => {
