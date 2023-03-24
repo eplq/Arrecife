@@ -4,17 +4,21 @@ import { router } from '../trpc';
 
 const companyRouter = router({
     companies: authedProcedure.query(async ({ ctx }) => {
-        const userCompanies = await prisma.company.findMany({
+        const companiesUser = await prisma.userCompany.findMany({
             where: {
-                users: {
-                    every: {
-                        userId: ctx.session.id
-                    }
+                userId: ctx.session.id
+            }
+        });
+
+        const companies = await prisma.company.findMany({
+            where: {
+                id: {
+                    in: companiesUser.map((item) => item.companyId)
                 }
             }
         });
 
-        return userCompanies;
+        return companies;
     })
 });
 
