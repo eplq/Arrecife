@@ -39,6 +39,20 @@ beforeAll(async () => {
             }
         }
     });
+
+    await prisma.company.create({
+        data: {
+            NIF: '87654321B',
+            name: 'Owned SL',
+            address: 'Calle en Propiedad, Bajo',
+            users: {
+                create: {
+                    userId: user.personId,
+                    managesIt: true
+                }
+            }
+        }
+    });
 });
 
 describe('companies', () => {
@@ -51,6 +65,19 @@ describe('companies', () => {
                 name: 'ASD SL',
                 address: 'Calle Asd, Bajo',
                 id: 1
+            }
+        ]);
+    });
+
+    it('get user owned companies', async () => {
+        const companies = await caller.ownedCompanies();
+
+        expect(companies).toStrictEqual([
+            {
+                NIF: '87654321B',
+                name: 'Owned SL',
+                address: 'Calle en Propiedad, Bajo',
+                id: 2
             }
         ]);
     });
