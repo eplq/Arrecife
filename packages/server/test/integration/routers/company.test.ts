@@ -53,6 +53,30 @@ beforeAll(async () => {
             }
         }
     });
+
+    const user2 = await prisma.user.create({
+        data: {
+            email: 'qwe@qwe.com',
+            password: 'qwe',
+            person: {
+                create: { name: 'qwe', surnames: 'qwe' }
+            }
+        }
+    });
+
+    await prisma.company.create({
+        data: {
+            NIF: '19283746C',
+            name: 'Other Owned SL',
+            address: 'Calle en Propiedad, Segundo',
+            users: {
+                create: {
+                    userId: user2.personId,
+                    managesIt: true
+                }
+            }
+        }
+    });
 });
 
 describe('companies', () => {
@@ -99,5 +123,22 @@ describe('companies', () => {
                 id: 2
             }
         ]);
+    });
+
+    it('get specific company', async () => {
+        const company = await caller.company(1);
+
+        expect(company).toStrictEqual({
+            NIF: '12345678A',
+            name: 'ASD SL',
+            address: 'Calle Asd, Bajo',
+            id: 1
+        });
+
+        const inexistentCompany = await caller.company(99);
+        expect(inexistentCompany).toStrictEqual(null);
+
+        const otherUserCompany = await caller.company(3);
+        expect(otherUserCompany).toStrictEqual(null);
     });
 });

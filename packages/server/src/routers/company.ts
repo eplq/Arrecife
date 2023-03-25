@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import prisma from '../prisma';
 import authedProcedure from '../procedures/authedProcedure';
 import { router } from '../trpc';
@@ -57,6 +59,25 @@ const companyRouter = router({
         });
 
         return companies;
+    }),
+
+    company: authedProcedure.input(z.number()).query(async ({ ctx, input }) => {
+        const userCompany = await prisma.userCompany.findFirst({
+            where: {
+                companyId: input,
+                userId: ctx.session.id
+            }
+        });
+
+        if (!userCompany) return null;
+
+        const company = await prisma.company.findFirst({
+            where: {
+                id: userCompany.companyId
+            }
+        });
+
+        return company;
     })
 });
 
