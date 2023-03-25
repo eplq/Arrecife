@@ -56,8 +56,8 @@ beforeAll(async () => {
 });
 
 describe('companies', () => {
-    it('get all user companies', async () => {
-        const companies = await caller.companies();
+    it('get not owned user companies', async () => {
+        const companies = await caller.notOwnedCompanies();
 
         expect(companies).toStrictEqual([
             {
@@ -73,6 +73,25 @@ describe('companies', () => {
         const companies = await caller.ownedCompanies();
 
         expect(companies).toStrictEqual([
+            {
+                NIF: '87654321B',
+                name: 'Owned SL',
+                address: 'Calle en Propiedad, Bajo',
+                id: 2
+            }
+        ]);
+    });
+
+    it('get all user companies', async () => {
+        const companies = await caller.companies();
+
+        expect(companies).toStrictEqual([
+            {
+                NIF: '12345678A',
+                name: 'ASD SL',
+                address: 'Calle Asd, Bajo',
+                id: 1
+            },
             {
                 NIF: '87654321B',
                 name: 'Owned SL',

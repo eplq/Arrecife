@@ -6,8 +6,7 @@ const companyRouter = router({
     companies: authedProcedure.query(async ({ ctx }) => {
         const companiesUser = await prisma.userCompany.findMany({
             where: {
-                userId: ctx.session.id,
-                managesIt: false
+                userId: ctx.session.id
             }
         });
 
@@ -21,11 +20,31 @@ const companyRouter = router({
 
         return companies;
     }),
+
     ownedCompanies: authedProcedure.query(async ({ ctx }) => {
         const companiesUser = await prisma.userCompany.findMany({
             where: {
                 userId: ctx.session.id,
                 managesIt: true
+            }
+        });
+
+        const companies = await prisma.company.findMany({
+            where: {
+                id: {
+                    in: companiesUser.map((item) => item.companyId)
+                }
+            }
+        });
+
+        return companies;
+    }),
+
+    notOwnedCompanies: authedProcedure.query(async ({ ctx }) => {
+        const companiesUser = await prisma.userCompany.findMany({
+            where: {
+                userId: ctx.session.id,
+                managesIt: false
             }
         });
 
