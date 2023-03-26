@@ -141,4 +141,30 @@ describe('companies', () => {
         const otherUserCompany = await caller.company(3);
         expect(otherUserCompany).toStrictEqual(null);
     });
+
+    it('create company', async () => {
+        const company = await caller.addCompany({
+            NIF: '13243546D',
+            name: 'Compañía SL',
+            address: 'no'
+        });
+
+        expect(company).toStrictEqual({
+            id: 4,
+            NIF: '13243546D',
+            name: 'Compañía SL',
+            address: 'no'
+        });
+
+        const invalidCompany = async () =>
+            caller.addCompany({
+                NIF: '13243546D',
+                name: 'Compañía SL',
+                address: 'no'
+            });
+
+        expect(invalidCompany).rejects.toThrowError(
+            'this company already exists for this user'
+        );
+    });
 });
