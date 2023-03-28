@@ -167,4 +167,17 @@ describe('companies', () => {
             'this company already exists for this user'
         );
     });
+
+    it('delete a company', async () => {
+        expect(await caller.deleteCompany(1)).toStrictEqual({
+            NIF: '12345678A',
+            name: 'ASD SL',
+            address: 'Calle Asd, Bajo',
+            id: 1
+        });
+
+        expect(async () => caller.deleteCompany(1)).toThrowError(
+            "can't delete a company that does not exists"
+        );
+    });
 });

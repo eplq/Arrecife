@@ -114,6 +114,40 @@ const companyRouter = router({
             });
 
             return newCompany;
+        }),
+
+    deleteCompany: authedProcedure
+        .input(z.number().int().positive())
+        .mutation(async ({ ctx, input }) => {
+            const userCompany = await prisma.userCompany.findFirst({
+                where: {
+                    companyId: input,
+                    userId: ctx.session.id
+                }
+            });
+
+            if (!userCompany)
+                throw new TRPCError({
+                    code: 'BAD_REQUEST',
+                    message: "can't delete a company that does not exists"
+                });
+
+            await prisma.userCompany.delete({
+                where: {
+                    userId_companyId: {
+                        companyId: userCompany.companyId,
+                        userId: userCompany.userId
+                    }
+                }
+            });
+
+            const company = await prisma.company.delete({
+                where: {
+                    id: userCompany.companyId
+                }
+            });
+
+            return company;
         })
 });
 
