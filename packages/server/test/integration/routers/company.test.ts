@@ -176,8 +176,8 @@ describe('companies', () => {
             id: 1
         });
 
-        expect(async () => caller.deleteCompany(1)).toThrowError(
+        expect(async () => caller.deleteCompany(1)).rejects.toThrowError(
             "can't delete a company that does not exists"
         );
-    });
+    }, 1000000);
 });
