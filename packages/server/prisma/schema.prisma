@@ -47,7 +47,7 @@ model User {
   email    String @unique @db.VarChar(60)
   password String @db.VarChar(70)
 
-  companies UserCompany[]
+  companies Company[]
 
   session UserSession?
 }
@@ -58,18 +58,6 @@ model UserSession {
 
   token   String
   expires DateTime
-}
-
-model UserCompany {
-  userId Int
-  user   User @relation(fields: [userId], references: [personId])
-
-  companyId Int
-  company   Company @relation(fields: [companyId], references: [id])
-
-  managesIt Boolean
-
-  @@id([userId, companyId])
 }
 
 model Contact {
@@ -91,7 +79,7 @@ model Company {
   NIF     String @db.VarChar(10)
   address String @db.VarChar(70)
 
-  users UserCompany[]
+  users User[]
 
   paymentPlans PaymentPlan[]
   taxes        Tax[]
