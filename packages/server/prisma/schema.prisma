@@ -85,6 +85,9 @@ model Company {
   taxes        Tax[]
   contacts     Contact[]
   provider     Provider?
+  companies    Company[]     @relation(name: "ownership")
+  ownerId      Int?
+  owner        Company?      @relation(fields: [ownerId], references: [id], name: "ownership")
 
   dispatchNotes DispatchNote[]
 
