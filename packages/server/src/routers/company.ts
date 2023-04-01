@@ -7,17 +7,13 @@ import { CompanySchema } from '../schemas/company';
 import { router } from '../trpc';
 
 const companyRouter = router({
-    companies: authedProcedure.query(async ({ ctx }) => {
-        const companiesUser = await prisma.userCompany.findMany({
-            where: {
-                userId: ctx.session.id
-            }
-        });
-
+    userCompanies: authedProcedure.query(async ({ ctx }) => {
         const companies = await prisma.company.findMany({
             where: {
-                id: {
-                    in: companiesUser.map((item) => item.companyId)
+                users: {
+                    some: {
+                        personId: ctx.session.id
+                    }
                 }
             }
         });
@@ -25,57 +21,48 @@ const companyRouter = router({
         return companies;
     }),
 
-    ownedCompanies: authedProcedure.query(async ({ ctx }) => {
-        const companiesUser = await prisma.userCompany.findMany({
-            where: {
-                userId: ctx.session.id,
-                managesIt: true
-            }
-        });
-
-        const companies = await prisma.company.findMany({
-            where: {
-                id: {
-                    in: companiesUser.map((item) => item.companyId)
+    companies: authedProcedure
+        .input(z.number().int().positive())
+        .query(async ({ ctx, input }) => {
+            const userCompany = await prisma.company.findFirst({
+                where: {
+                    id: input,
+                    users: {
+                        some: {
+                            personId: ctx.session.id
+                        }
+                    }
                 }
+            });
+
+            if (!userCompany) {
+                throw new TRPCError({
+                    code: 'NOT_FOUND',
+                    message:
+                        "cant't get companies of a company that does not exists for this user"
+                });
             }
-        });
 
-        return companies;
-    }),
-
-    notOwnedCompanies: authedProcedure.query(async ({ ctx }) => {
-        const companiesUser = await prisma.userCompany.findMany({
-            where: {
-                userId: ctx.session.id,
-                managesIt: false
-            }
-        });
-
-        const companies = await prisma.company.findMany({
-            where: {
-                id: {
-                    in: companiesUser.map((item) => item.companyId)
+            const companies = await prisma.company.findMany({
+                where: {
+                    owner: {
+                        id: userCompany.id
+                    }
                 }
-            }
-        });
+            });
 
-        return companies;
-    }),
+            return companies;
+        }),
 
     company: authedProcedure.input(z.number()).query(async ({ ctx, input }) => {
-        const userCompany = await prisma.userCompany.findFirst({
-            where: {
-                companyId: input,
-                userId: ctx.session.id
-            }
-        });
-
-        if (!userCompany) return null;
-
         const company = await prisma.company.findFirst({
             where: {
-                id: userCompany.companyId
+                id: input,
+                users: {
+                    some: {
+                        personId: ctx.session.id
+                    }
+                }
             }
         });
 
@@ -85,29 +72,71 @@ const companyRouter = router({
     addCompany: authedProcedure
         .input(
             CompanySchema.extend({
-                managesIt: z.boolean().default(false)
+                ownerCompany: z.number().int().positive().nullable()
             })
         )
         .mutation(async ({ ctx, input }) => {
-            const userCompany = await prisma.userCompany.findFirst({
-                where: { company: { NIF: input.NIF }, userId: ctx.session.id }
+            const existingCompany = await prisma.company.findFirst({
+                where: {
+                    NIF: input.NIF,
+                    users: {
+                        some: {
+                            personId: ctx.session.id
+                        }
+                    },
+                    OR: {
+                        NIF: input.NIF,
+                        ownerId: input.ownerCompany
+                    }
+                }
             });
 
-            if (userCompany)
+            if (existingCompany)
                 throw new TRPCError({
                     code: 'CONFLICT',
                     message: 'this company already exists for this user'
                 });
 
-            const newCompany = await prisma.company.create({
+            let newCompany;
+            if (input.ownerCompany) {
+                const findOwnerCompany = await prisma.company.findFirst({
+                    where: {
+                        id: input.ownerCompany,
+                        users: {
+                            some: {
+                                personId: ctx.session.id
+                            }
+                        }
+                    }
+                });
+
+                if (!findOwnerCompany)
+                    throw new TRPCError({
+                        code: 'NOT_FOUND',
+                        message:
+                            "can't find the company referred in ownerCompany"
+                    });
+
+                newCompany = await prisma.company.create({
+                    data: {
+                        NIF: input.NIF,
+                        name: input.name,
+                        address: input.address,
+                        ownerId: input.ownerCompany
+                    }
+                });
+
+                return newCompany;
+            }
+
+            newCompany = await prisma.company.create({
                 data: {
                     NIF: input.NIF,
                     name: input.name,
                     address: input.address,
                     users: {
-                        create: {
-                            userId: ctx.session.id,
-                            managesIt: input.managesIt
+                        connect: {
+                            personId: ctx.session.id
                         }
                     }
                 }
@@ -119,10 +148,14 @@ const companyRouter = router({
     deleteCompany: authedProcedure
         .input(z.number().int().positive())
         .mutation(async ({ ctx, input }) => {
-            const userCompany = await prisma.userCompany.findFirst({
+            const userCompany = await prisma.company.findFirst({
                 where: {
-                    companyId: input,
-                    userId: ctx.session.id
+                    id: input,
+                    users: {
+                        some: {
+                            personId: ctx.session.id
+                        }
+                    }
                 }
             });
 
@@ -132,18 +165,9 @@ const companyRouter = router({
                     message: "can't delete a company that does not exists"
                 });
 
-            await prisma.userCompany.delete({
-                where: {
-                    userId_companyId: {
-                        companyId: userCompany.companyId,
-                        userId: userCompany.userId
-                    }
-                }
-            });
-
             const company = await prisma.company.delete({
                 where: {
-                    id: userCompany.companyId
+                    id: userCompany.id
                 }
             });
 
