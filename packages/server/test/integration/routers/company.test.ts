@@ -26,15 +26,14 @@ beforeAll(async () => {
         }
     });
 
-    await prisma.company.create({
+    const company = await prisma.company.create({
         data: {
             NIF: '12345678A',
             name: 'ASD SL',
             address: 'Calle Asd, Bajo',
             users: {
-                create: {
-                    userId: user.personId,
-                    managesIt: false
+                connect: {
+                    personId: user.personId
                 }
             }
         }
@@ -46,11 +45,11 @@ beforeAll(async () => {
             name: 'Owned SL',
             address: 'Calle en Propiedad, Bajo',
             users: {
-                create: {
-                    userId: user.personId,
-                    managesIt: true
+                connect: {
+                    personId: user.personId
                 }
-            }
+            },
+            ownerId: company.id
         }
     });
 
@@ -70,9 +69,8 @@ beforeAll(async () => {
             name: 'Other Owned SL',
             address: 'Calle en Propiedad, Segundo',
             users: {
-                create: {
-                    userId: user2.personId,
-                    managesIt: true
+                connect: {
+                    personId: user2.personId
                 }
             }
         }
@@ -81,46 +79,36 @@ beforeAll(async () => {
 
 describe('companies', () => {
     it('get not owned user companies', async () => {
-        const companies = await caller.notOwnedCompanies();
+        const companies = await caller.companies(1);
 
         expect(companies).toStrictEqual([
             {
-                NIF: '12345678A',
-                name: 'ASD SL',
-                address: 'Calle Asd, Bajo',
-                id: 1
+                NIF: '87654321B',
+                name: 'Owned SL',
+                address: 'Calle en Propiedad, Bajo',
+                id: 2,
+                ownerId: 1
             }
         ]);
     });
 
     it('get user owned companies', async () => {
-        const companies = await caller.ownedCompanies();
-
-        expect(companies).toStrictEqual([
-            {
-                NIF: '87654321B',
-                name: 'Owned SL',
-                address: 'Calle en Propiedad, Bajo',
-                id: 2
-            }
-        ]);
-    });
-
-    it('get all user companies', async () => {
-        const companies = await caller.companies();
+        const companies = await caller.userCompanies();
 
         expect(companies).toStrictEqual([
             {
                 NIF: '12345678A',
-                name: 'ASD SL',
                 address: 'Calle Asd, Bajo',
-                id: 1
+                id: 1,
+                name: 'ASD SL',
+                ownerId: null
             },
             {
                 NIF: '87654321B',
                 name: 'Owned SL',
                 address: 'Calle en Propiedad, Bajo',
-                id: 2
+                id: 2,
+                ownerId: 1
             }
         ]);
     });
@@ -132,7 +120,8 @@ describe('companies', () => {
             NIF: '12345678A',
             name: 'ASD SL',
             address: 'Calle Asd, Bajo',
-            id: 1
+            id: 1,
+            ownerId: null
         });
 
         const inexistentCompany = await caller.company(99);
@@ -146,21 +135,24 @@ describe('companies', () => {
         const company = await caller.addCompany({
             NIF: '13243546D',
             name: 'Compañía SL',
-            address: 'no'
+            address: 'no',
+            ownerCompany: null
         });
 
         expect(company).toStrictEqual({
             id: 4,
             NIF: '13243546D',
             name: 'Compañía SL',
-            address: 'no'
+            address: 'no',
+            ownerId: null
         });
 
         const invalidCompany = async () =>
             caller.addCompany({
                 NIF: '13243546D',
                 name: 'Compañía SL',
-                address: 'no'
+                address: 'no',
+                ownerCompany: null
             });
 
         expect(invalidCompany).rejects.toThrowError(
@@ -173,7 +165,8 @@ describe('companies', () => {
             NIF: '12345678A',
             name: 'ASD SL',
             address: 'Calle Asd, Bajo',
-            id: 1
+            id: 1,
+            ownerId: null
         });
 
         expect(async () => caller.deleteCompany(1)).rejects.toThrowError(
