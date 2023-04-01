@@ -4,7 +4,7 @@
     "description": "Back-end para Arrecife",
     "private": true,
     "scripts": {
-        "test": "npx prisma migrate reset --force && jest -i",
+        "test": "jest -i",
         "test:watch": "jest -i --watchAll",
         "dev": "nodemon",
         "build": "tsc -b",
