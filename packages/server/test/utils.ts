@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
 export default async function resetDB(prisma: PrismaClient) {
+    await prisma.contact.deleteMany();
     await prisma.company.deleteMany();
     await prisma.userSession.deleteMany();
     await prisma.user.deleteMany();
