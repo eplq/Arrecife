@@ -25,6 +25,9 @@ const contactsRouter = router({
             const contacts = await prisma.contact.findMany({
                 where: {
                     companyId: company.id
+                },
+                include: {
+                    person: {}
                 }
             });
 
