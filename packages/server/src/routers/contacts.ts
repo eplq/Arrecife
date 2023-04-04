@@ -11,12 +11,13 @@ const contactsRouter = router({
             const company = await prisma.company.findFirst({
                 where: {
                     id: input,
-                    users: {
-                        some: {
-                            personId: ctx.session.id
+                    owner: {
+                        users: {
+                            some: {
+                                personId: ctx.session.id
+                            }
                         }
-                    },
-                    owner: null
+                    }
                 }
             });
 
@@ -31,7 +32,7 @@ const contactsRouter = router({
                 }
             });
 
-            if (!contacts) return null;
+            if (!contacts.length) return null;
 
             return contacts;
         })
