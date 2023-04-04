@@ -60,11 +60,25 @@ beforeAll(async () => {
         }
     });
 
+    // personId: 2
     await prisma.contact.create({
         data: {
             role: 'Administrador',
             person: {
-                create: { name: 'Julio', surnames: 'Iglesias' }
+                create: {
+                    name: 'Julio',
+                    surnames: 'Iglesias',
+                    emails: {
+                        create: {
+                            email: 'julio.iglesias@arrecife'
+                        }
+                    },
+                    phones: {
+                        create: {
+                            phone: '611111111'
+                        }
+                    }
+                }
             },
             company: {
                 connect: {
@@ -74,6 +88,7 @@ beforeAll(async () => {
         }
     });
 
+    // personId: 3
     await prisma.contact.create({
         data: {
             role: 'Dueño',
@@ -87,11 +102,81 @@ beforeAll(async () => {
             }
         }
     });
+
+    // personId: 4
+    const user2 = await prisma.user.create({
+        data: {
+            email: 'dsa@dsa.com',
+            password: 'dsa',
+            person: {
+                create: { name: 'dsa', surnames: 'dsa' }
+            }
+        }
+    });
+
+    // id: 4
+    const company2 = await prisma.company.create({
+        data: {
+            NIF: '12348765B',
+            name: 'Company2 SL',
+            address: 'Calle Asd, Bajo',
+            users: {
+                connect: {
+                    personId: user2.personId
+                }
+            }
+        }
+    });
+
+    // personId: 5
+    await prisma.contact.create({
+        data: {
+            role: 'Dueño',
+            person: {
+                create: { name: 'Pepe', surnames: 'Blanco' }
+            },
+            company: {
+                connect: {
+                    id: company2.id
+                }
+            }
+        }
+    });
 });
 
 describe('contacts tests', () => {
     it('create contact', async () => {});
-    it('get contact', async () => {});
+
+    it('get contact', async () => {
+        const contact = await caller.contact({
+            contact: 2,
+            company: 3
+        });
+
+        expect(contact).toStrictEqual({
+            role: 'Administrador',
+            name: 'Julio',
+            surnames: 'Iglesias',
+            id: 2,
+            emails: ['julio.iglesias@arrecife'],
+            phones: ['611111111']
+        });
+
+        const existentContactWrongCompany = await caller.contact({
+            contact: 3,
+            company: 3
+        });
+
+        expect(existentContactWrongCompany).toBeNull();
+
+        const companyOfOtherUser = await caller.contact({
+            company: 4,
+            contact: 5
+        });
+
+        expect(companyOfOtherUser).toBeNull();
+    });
+
     it('get contacts of company', async () => {
         const contacts = await caller.contacts(3);
 
@@ -116,6 +201,8 @@ describe('contacts tests', () => {
 
         expect(await caller.contacts(1)).toBeNull();
     });
+
     it('modify contact', async () => {});
+
     it('delete contact', async () => {});
 });
