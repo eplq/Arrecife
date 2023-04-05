@@ -145,8 +145,6 @@ beforeAll(async () => {
 });
 
 describe('contacts tests', () => {
-    it('create contact', async () => {});
-
     it('get contact', async () => {
         const contact = await caller.contact({
             contact: 2,
@@ -205,4 +203,50 @@ describe('contacts tests', () => {
     it('modify contact', async () => {});
 
     it('delete contact', async () => {});
+
+    it('create contact', async () => {
+        const result = await caller.createContact({
+            name: 'Luz',
+            surnames: 'Casal',
+            role: 'Administradora',
+            emails: ['luz.casal@contacts'],
+            phones: ['611611611'],
+            company: 3
+        });
+
+        expect(result).toBeTruthy();
+
+        const repeatedResult = await caller.createContact({
+            name: 'Luz',
+            surnames: 'Casal',
+            role: 'Administradora',
+            emails: ['luz.casal@contacts'],
+            phones: ['611611611'],
+            company: 3
+        });
+
+        expect(repeatedResult).toBeFalsy();
+
+        const otherCompanyResult = await caller.createContact({
+            name: 'Luz',
+            surnames: 'Casal',
+            role: 'Administradora',
+            emails: ['luz.casal@contacts'],
+            phones: ['611611611'],
+            company: 4
+        });
+
+        expect(otherCompanyResult).toBeFalsy();
+
+        const inexistentCompanyResult = await caller.createContact({
+            name: 'Luz',
+            surnames: 'Casal',
+            role: 'Administradora',
+            emails: ['luz.casal@contacts'],
+            phones: ['611611611'],
+            company: 99
+        });
+
+        expect(inexistentCompanyResult).toBeFalsy();
+    });
 });
