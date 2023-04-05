@@ -108,6 +108,21 @@ const contactsRouter = router({
 
             if (!company) return false;
 
+            const findContact = await prisma.contact.findFirst({
+                where: {
+                    role: input.role,
+                    person: {
+                        name: input.name,
+                        surnames: input.surnames
+                    },
+                    company: {
+                        id: company.id
+                    }
+                }
+            });
+
+            if (findContact) return false;
+
             const newContact = await prisma.contact.create({
                 data: {
                     role: input.role,
@@ -132,15 +147,14 @@ const contactsRouter = router({
                         }
                     },
                     company: {
-                        connect: company
+                        connect: {
+                            id: company.id
+                        }
                     }
                 }
             });
 
-            if (newContact) return true;
-
-            // !!newContact   ?
-            return false;
+            return newContact;
         })
 });
 
