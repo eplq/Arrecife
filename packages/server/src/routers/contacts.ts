@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import prisma from '../prisma';
 import authedProcedure from '../procedures/authedProcedure';
+import { ContactSchema } from '../schemas/contacts';
 import { router } from '../trpc';
 
 const contactsRouter = router({
@@ -83,6 +84,63 @@ const contactsRouter = router({
                     (phoneRecord) => phoneRecord.phone
                 )
             };
+        }),
+
+    createContact: authedProcedure
+        .input(
+            ContactSchema.extend({
+                company: z.number().int().positive()
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            const company = await prisma.company.findFirst({
+                where: {
+                    id: input.company,
+                    owner: {
+                        users: {
+                            some: {
+                                personId: ctx.session.id
+                            }
+                        }
+                    }
+                }
+            });
+
+            if (!company) return false;
+
+            const newContact = await prisma.contact.create({
+                data: {
+                    role: input.role,
+                    person: {
+                        create: {
+                            name: input.name,
+                            surnames: input.surnames,
+                            emails: {
+                                createMany: {
+                                    data: input.emails.map((email) => ({
+                                        email
+                                    }))
+                                }
+                            },
+                            phones: {
+                                createMany: {
+                                    data: input.phones.map((phone) => ({
+                                        phone
+                                    }))
+                                }
+                            }
+                        }
+                    },
+                    company: {
+                        connect: company
+                    }
+                }
+            });
+
+            if (newContact) return true;
+
+            // !!newContact   ?
+            return false;
         })
 });
 
