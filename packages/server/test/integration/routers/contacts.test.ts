@@ -202,7 +202,35 @@ describe('contacts tests', () => {
 
     it('modify contact', async () => {});
 
-    it('delete contact', async () => {});
+    it('delete contact', async () => {
+        const deleted = await caller.deleteContact({
+            company: 3,
+            person: 2
+        });
+
+        expect(deleted).toBeTruthy();
+
+        const inexistentContact = await caller.deleteContact({
+            company: 3,
+            person: 2
+        });
+
+        expect(inexistentContact).toBeFalsy();
+
+        const inexistentCompany = await caller.deleteContact({
+            company: 99,
+            person: 3
+        });
+
+        expect(inexistentCompany).toBeFalsy();
+
+        const otherUserContact = await caller.deleteContact({
+            company: 4,
+            person: 5
+        });
+
+        expect(otherUserContact).toBeFalsy();
+    });
 
     it('create contact', async () => {
         const result = await caller.createContact({
