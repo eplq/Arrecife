@@ -198,6 +198,74 @@ const contactsRouter = router({
             });
 
             return !!deleted;
+        }),
+    updateContact: authedProcedure
+        .input(
+            ContactSchema.extend({
+                company: z.number().int().positive(),
+                person: z.number().int().positive()
+            })
+                .omit({
+                    phones: true,
+                    emails: true
+                })
+                .partial({
+                    name: true,
+                    surnames: true,
+                    role: true
+                })
+        )
+        .mutation(async ({ ctx, input }) => {
+            const company = await prisma.company.findFirst({
+                where: {
+                    id: input.company,
+                    owner: {
+                        users: {
+                            some: {
+                                personId: ctx.session.id
+                            }
+                        }
+                    }
+                }
+            });
+
+            if (!company) return false;
+
+            const contactToUpdate = await prisma.contact.findFirst({
+                where: {
+                    companyId: company.id,
+                    personId: input.person
+                },
+                include: {
+                    person: { include: { emails: {}, phones: {} } }
+                }
+            });
+
+            if (!contactToUpdate) return false;
+
+            const updated = await prisma.contact.update({
+                where: {
+                    personId_companyId: {
+                        companyId: input.company,
+                        personId: input.person
+                    }
+                },
+                data: {
+                    person: {
+                        update: {
+                            name: input.name
+                                ? input.name
+                                : contactToUpdate.person.name,
+                            surnames: input.surnames
+                                ? input.surnames
+                                : contactToUpdate.person.surnames
+                        }
+                    },
+                    role: input.role ? input.role : contactToUpdate.role
+                }
+            });
+
+            return !!updated;
         })
 });
 
