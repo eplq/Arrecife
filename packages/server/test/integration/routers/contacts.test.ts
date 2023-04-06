@@ -200,7 +200,98 @@ describe('contacts tests', () => {
         expect(await caller.contacts(1)).toBeNull();
     });
 
-    it('modify contact', async () => {});
+    it('modify contact', async () => {
+        const onlyName = await caller.updateContact({
+            company: 3,
+            person: 2,
+            name: 'Víctor Manuel'
+        });
+
+        const onlyNameRecordDB = await prisma.contact.findFirst({
+            where: {
+                companyId: 3,
+                personId: 2
+            },
+            include: {
+                person: {}
+            }
+        });
+
+        expect(onlyNameRecordDB?.person.name).toBe('Víctor Manuel');
+        expect(onlyNameRecordDB?.person.surnames).toBe('Iglesias');
+        expect(onlyNameRecordDB?.role).toBe('Administrador');
+        expect(onlyName).toBeTruthy();
+
+        const onlySurnames = await caller.updateContact({
+            company: 3,
+            person: 2,
+            surnames: 'San José'
+        });
+
+        const onlySurnamesRecordDB = await prisma.contact.findFirst({
+            where: {
+                companyId: 3,
+                personId: 2
+            },
+            include: {
+                person: {}
+            }
+        });
+
+        expect(onlySurnamesRecordDB?.person.name).toBe('Víctor Manuel');
+        expect(onlySurnamesRecordDB?.person.surnames).toBe('San José');
+        expect(onlySurnamesRecordDB?.role).toBe('Administrador');
+        expect(onlySurnames).toBeTruthy();
+
+        expect(onlyNameRecordDB?.person.name).toBe('Víctor Manuel');
+        expect(onlyNameRecordDB?.person.surnames).toBe('Iglesias');
+        expect(onlyNameRecordDB?.role).toBe('Administrador');
+        expect(onlyName).toBeTruthy();
+
+        const onlyRole = await caller.updateContact({
+            company: 3,
+            person: 2,
+            role: 'Gestor'
+        });
+
+        const onlyRoleRecordDB = await prisma.contact.findFirst({
+            where: {
+                companyId: 3,
+                personId: 2
+            },
+            include: {
+                person: {}
+            }
+        });
+
+        expect(onlyRoleRecordDB?.person.name).toBe('Víctor Manuel');
+        expect(onlyRoleRecordDB?.person.surnames).toBe('San José');
+        expect(onlyRoleRecordDB?.role).toBe('Gestor');
+        expect(onlyRole).toBeTruthy();
+
+        const updated = await caller.updateContact({
+            company: 3,
+            person: 2,
+            name: 'Pablo',
+            surnames: 'Milanés',
+            role: 'Contable'
+        });
+
+        const updatedRecordDB = await prisma.contact.findFirst({
+            where: {
+                companyId: 3,
+                personId: 2
+            },
+            include: {
+                person: {}
+            }
+        });
+
+        expect(updatedRecordDB?.person.name).toBe('Pablo');
+        expect(updatedRecordDB?.person.surnames).toBe('Milanés');
+        expect(updatedRecordDB?.role).toBe('Contable');
+        expect(updated).toBeTruthy();
+    });
 
     it('delete contact', async () => {
         const deleted = await caller.deleteContact({
