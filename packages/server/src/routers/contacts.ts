@@ -155,6 +155,49 @@ const contactsRouter = router({
             });
 
             return newContact;
+        }),
+    deleteContact: authedProcedure
+        .input(
+            z.object({
+                person: z.number().int().positive(),
+                company: z.number().int().positive()
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            const company = await prisma.company.findFirst({
+                where: {
+                    id: input.company,
+                    owner: {
+                        users: {
+                            some: {
+                                personId: ctx.session.id
+                            }
+                        }
+                    }
+                }
+            });
+
+            if (!company) return false;
+
+            const contactToDelete = await prisma.contact.findFirst({
+                where: {
+                    companyId: company.id,
+                    personId: input.person
+                }
+            });
+
+            if (!contactToDelete) return false;
+
+            const deleted = await prisma.contact.delete({
+                where: {
+                    personId_companyId: {
+                        companyId: contactToDelete.companyId,
+                        personId: contactToDelete.personId
+                    }
+                }
+            });
+
+            return !!deleted;
         })
 });
 
