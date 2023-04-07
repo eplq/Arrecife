@@ -70,6 +70,45 @@ const taxRouter = router({
             });
 
             return !!newTax;
+        }),
+
+    deleteTax: authedProcedure
+        .input(
+            z.object({
+                tax: z.number().int().positive(),
+                company: z.number().int().positive()
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            const company = await prisma.company.findFirst({
+                where: {
+                    id: input.company,
+                    users: {
+                        some: {
+                            personId: ctx.session.id
+                        }
+                    }
+                }
+            });
+
+            if (!company) return false;
+
+            const tax = await prisma.tax.findFirst({
+                where: {
+                    id: input.tax,
+                    companyId: company.id
+                }
+            });
+
+            if (!tax) return false;
+
+            await prisma.tax.delete({
+                where: {
+                    id: tax.id
+                }
+            });
+
+            return true;
         })
 });
 
