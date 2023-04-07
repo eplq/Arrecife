@@ -109,6 +109,48 @@ const taxRouter = router({
             });
 
             return true;
+        }),
+    modifyTax: authedProcedure
+        .input(
+            TaxSchema.extend({
+                tax: z.number().int().positive(),
+                company: z.number().int().positive()
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            const company = await prisma.company.findFirst({
+                where: {
+                    id: input.company,
+                    users: {
+                        some: {
+                            personId: ctx.session.id
+                        }
+                    }
+                }
+            });
+
+            if (!company) return false;
+
+            const tax = await prisma.tax.findFirst({
+                where: {
+                    id: input.tax,
+                    companyId: company.id
+                }
+            });
+
+            if (!tax) return false;
+
+            await prisma.tax.update({
+                where: {
+                    id: tax.id
+                },
+                data: {
+                    name: input.name,
+                    rate: input.rate
+                }
+            });
+
+            return true;
         })
 });
 
