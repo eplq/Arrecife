@@ -126,7 +126,7 @@ const companyRouter = router({
                     }
                 });
 
-                return newCompany;
+                return newCompany.id;
             }
 
             newCompany = await prisma.company.create({

@@ -69,7 +69,7 @@ const taxRouter = router({
                 }
             });
 
-            return !!newTax;
+            return newTax.id;
         }),
 
     deleteTax: authedProcedure

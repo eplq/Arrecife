@@ -98,7 +98,7 @@ const paymentPlansRouter = router({
 
             if (paymentPlan) return null;
 
-            await prisma.paymentPlan.create({
+            const newPaymentPlan = await prisma.paymentPlan.create({
                 data: {
                     name: input.name,
                     companyId: company.id,
@@ -110,7 +110,7 @@ const paymentPlansRouter = router({
                 }
             });
 
-            return paymentPlan;
+            return newPaymentPlan.id;
         })
 });
 
