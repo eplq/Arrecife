@@ -111,6 +111,45 @@ const paymentPlansRouter = router({
             });
 
             return newPaymentPlan.id;
+        }),
+
+    deletePaymentPlan: authedProcedure
+        .input(
+            z.object({
+                company: z.number().int().positive(),
+                paymentPlan: z.number().int().positive()
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            const company = await prisma.company.findFirst({
+                where: {
+                    id: input.company,
+                    users: {
+                        some: {
+                            personId: ctx.session.id
+                        }
+                    }
+                }
+            });
+
+            if (!company) return null;
+
+            const paymentPlan = await prisma.paymentPlan.findFirst({
+                where: {
+                    id: input.paymentPlan,
+                    companyId: company.id
+                }
+            });
+
+            if (!paymentPlan) return null;
+
+            await prisma.paymentPlan.delete({
+                where: {
+                    id: paymentPlan.id
+                }
+            });
+
+            return true;
         })
 });
 
