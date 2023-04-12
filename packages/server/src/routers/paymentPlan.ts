@@ -24,7 +24,7 @@ const paymentPlansRouter = router({
 
             const paymentPlans = await prisma.paymentPlan.findMany({
                 where: {
-                    id: company.id
+                    companyId: company.id
                 },
                 include: {
                     payments: {}
@@ -59,7 +59,8 @@ const paymentPlansRouter = router({
 
             const paymentPlan = await prisma.paymentPlan.findFirst({
                 where: {
-                    id: company.id
+                    id: input.paymentPlan,
+                    companyId: company.id
                 },
                 include: {
                     payments: {}
@@ -91,7 +92,7 @@ const paymentPlansRouter = router({
 
             const paymentPlan = await prisma.paymentPlan.findFirst({
                 where: {
-                    id: company.id,
+                    companyId: company.id,
                     name: input.name
                 }
             });
