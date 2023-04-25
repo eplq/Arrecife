@@ -40,8 +40,8 @@ model PersonEmail {
 
 // Sección User
 model User {
-  id Int @id @default(autoincrement())
-  name String
+  id       Int    @id @default(autoincrement())
+  name     String
   email    String @unique @db.VarChar(60)
   password String @db.VarChar(70)
 
