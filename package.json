@@ -1,22 +1,41 @@
 {
-  "name": "arrecife",
-  "version": "0.0.1",
-  "description": "Arrecife es un ERP",
-  "private": true,
-  "devDependencies": {
-    "typescript": "4.9.5"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/eplq/Arrecife.git"
-  },
-  "author": "eplq",
-  "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/eplq/Arrecife/issues"
-  },
-  "homepage": "https://github.com/eplq/Arrecife#readme"
+	"name": "arrecife",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"test:unit": "vitest",
+		"lint": "prettier --plugin-search-dir . --check . && eslint .",
+		"format": "prettier --plugin-search-dir . --write ."
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/kit": "^1.5.0",
+		"@types/bcrypt": "^5.0.0",
+		"@types/validator": "^13.7.15",
+		"@typescript-eslint/eslint-plugin": "^5.45.0",
+		"@typescript-eslint/parser": "^5.45.0",
+		"eslint": "^8.28.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-svelte3": "^4.0.0",
+		"prettier": "^2.8.0",
+		"prettier-plugin-svelte": "^2.8.1",
+		"prisma": "^4.13.0",
+		"svelte": "^3.54.0",
+		"svelte-check": "^3.0.1",
+		"tslib": "^2.4.1",
+		"typescript": "^5.0.0",
+		"vite": "^4.3.0",
+		"vitest": "^0.25.3"
+	},
+	"type": "module",
+	"dependencies": {
+		"@prisma/client": "^4.13.0",
+		"bcrypt": "^5.1.0",
+		"validator": "^13.9.0"
+	}
 }
