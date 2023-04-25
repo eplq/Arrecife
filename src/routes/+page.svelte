@@ -1,2 +1,7 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<div class="vh-100 d-flex flex-column justify-content-center align-items-center">
+	<h1>Arrecife</h1>
+	<div>
+		<a class="btn btn-outline-primary" href="/login">Login</a>
+		<a class="btn btn-outline-primary" href="/register">Register</a>
+	</div>
+</div>
