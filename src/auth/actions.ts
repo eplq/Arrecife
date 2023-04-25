@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient, User } from '@prisma/client';
 import { compare } from 'bcrypt';
 import isEmail from 'validator/lib/isEmail';
 
@@ -6,117 +6,114 @@ import generateHash from './hash';
 import addTime from './time';
 import generateToken from './utils';
 
-export async function registerUser(userInput: UserType, prisma: PrismaClient) {
-    const checkResult = UserSchema.safeParse(userInput);
+export async function registerUser(
+	userInput: {
+		name: string;
+		email: string;
+		password: string;
+	},
+	prisma: PrismaClient
+) {
+	if (!isEmail(userInput.email) || !userInput.name.length || !userInput.password.length)
+		return false;
 
-    if (!checkResult.success) return false;
+	let user = await prisma.user.findFirst({
+		where: {
+			email: userInput.email
+		}
+	});
 
-    let user = await prisma.user.findFirst({
-        where: {
-            email: userInput.email
-        }
-    });
+	if (user) return false;
 
-    if (user) return false;
+	user = await prisma.user.create({
+		data: {
+			email: userInput.email,
+			password: await generateHash(userInput.password),
+			name: userInput.name
+		}
+	});
 
-    user = await prisma.user.create({
-        data: {
-            email: userInput.email,
-            password: await generateHash(userInput.password),
-            person: {
-                create: {
-                    name: userInput.name,
-                    surnames: userInput.surnames
-                }
-            }
-        }
-    });
-
-    return user !== null;
+	return user !== null;
 }
 
 export async function login(
-    email: string,
-    password: string,
-    prisma: PrismaClient,
-    tokenExpiration: number = 86400
+	email: string,
+	password: string,
+	prisma: PrismaClient,
+	tokenExpiration: number = 86400
 ): Promise<string | false> {
-    if (isEmail(email) === false) return false;
-    if (tokenExpiration < 0) return false;
+	if (isEmail(email) === false) return false;
+	if (tokenExpiration < 0) return false;
 
-    const user = await prisma.user.findFirst({
-        where: {
-            email
-        }
-    });
+	const user = await prisma.user.findFirst({
+		where: {
+			email
+		}
+	});
 
-    if (!user) return false;
+	if (!user) return false;
 
-    if ((await compare(password, user.password)) === false) return false;
+	if ((await compare(password, user.password)) === false) return false;
 
-    const session = await prisma.userSession.upsert({
-        where: {
-            userId: user.personId
-        },
-        create: {
-            userId: user.personId,
-            expires: addTime(tokenExpiration),
-            token: generateToken()
-        },
-        update: {
-            expires: addTime(tokenExpiration),
-            token: generateToken()
-        }
-    });
+	const session = await prisma.userSession.upsert({
+		where: {
+			userId: user.id
+		},
+		create: {
+			userId: user.id,
+			expires: addTime(tokenExpiration),
+			token: generateToken()
+		},
+		update: {
+			expires: addTime(tokenExpiration),
+			token: generateToken()
+		}
+	});
 
-    return session.token;
+	return session.token;
 }
 
 export async function isValidSession(token: string, prisma: PrismaClient) {
-    if (!token) return false;
+	if (!token) return false;
 
-    const session = await prisma.userSession.findFirst({
-        where: {
-            token
-        }
-    });
+	const session = await prisma.userSession.findFirst({
+		where: {
+			token
+		}
+	});
 
-    if (!session) return false;
+	if (!session) return false;
 
-    return session.expires > new Date();
+	return session.expires > new Date();
 }
 
 export async function getSession(
-    token: string,
-    prisma: PrismaClient
-): Promise<(Omit<UserType, 'password'> & { id: number }) | null> {
-    if (!token) return null;
+	token: string,
+	prisma: PrismaClient
+): Promise<Omit<User, 'password'> | null> {
+	if (!token) return null;
 
-    if (!isValidSession(token, prisma)) return null;
+	if (!isValidSession(token, prisma)) return null;
 
-    const session = await prisma.userSession.findFirst({
-        where: {
-            token
-        }
-    });
+	const session = await prisma.userSession.findFirst({
+		where: {
+			token
+		}
+	});
 
-    if (!session) return null;
+	if (!session) return null;
 
-    const user = await prisma.user.findFirst({
-        where: {
-            personId: session.userId
-        },
-        include: {
-            person: true
-        }
-    });
+	const user = await prisma.user.findFirst({
+		where: {
+			id: session.userId
+		}
+	});
 
-    if (!user) return null;
+	if (!user) return null;
 
-    return {
-        id: user.personId,
-        name: user.person.name,
-        surnames: user.person.surnames,
-        email: user.email
-    };
+	return {
+		id: user.id,
+		name: user.name,
+		email: user.email
+	};
 }
