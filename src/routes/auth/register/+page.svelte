@@ -1,7 +1,7 @@
 <div class="vh-100 d-flex justify-content-center align-items-center">
 	<div class="container row flex-column align-items-center">
 		<img src="/ai.jpeg" alt="Logo de calculadora" class="w-auto" />
-		<h1 class="text-center my-4">Iniciar sesión</h1>
+		<h1 class="text-center my-4">Registrarse</h1>
 		<form class="col-12 col-md-8 col-lg-6">
 			<div class="mb-3">
 				<label for="email" class="form-label">E-mail</label>
@@ -24,7 +24,7 @@
 					name="password"
 				/>
 			</div>
-			<button type="submit" class="btn btn-primary">Iniciar sesión</button>
+			<button type="submit" class="btn btn-primary">Registrarse</button>
 		</form>
 	</div>
 </div>
