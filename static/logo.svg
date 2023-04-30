@@ -1,0 +1,19 @@
+<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="gradltr" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#1CCAD8;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1CCAD8;stop-opacity:0.8" />
+        </linearGradient>
+
+        <linearGradient id="gradrtl" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#1CCAD8;stop-opacity:0.8" />
+            <stop offset="100%" style="stop-color:#1CCAD8;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <polygon points="32,48 32,24 64,64" fill="#052847" />
+    <polygon points="0,64 32,48 32,24" fill="#052847" />
+
+    <polygon points="0,64 32,0 32,24 12,64" fill="url(#gradrtl)" />
+    <polygon points="32,0 32,24 52,64 64,64" fill="url(#gradltr)" />
+</svg>
