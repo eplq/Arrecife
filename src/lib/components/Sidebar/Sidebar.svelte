@@ -52,6 +52,7 @@
 				</li>
 			{/if}
 			<li><hr class="dropdown-divider" /></li>
+			<li><a class="dropdown-item" href="/app/add">Añadir empresa</a></li>
 			<li><a class="dropdown-item" href="/auth/logout">Cerrar sesión</a></li>
 		</ul>
 	</div>
