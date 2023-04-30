@@ -117,3 +117,19 @@ export async function getSession(
 		email: user.email
 	};
 }
+
+export async function logout(id: number, prisma: PrismaClient): Promise<void> {
+	const session = await prisma.userSession.findFirst({
+		where: {
+			userId: id
+		}
+	});
+
+	if (!session) return;
+
+	await prisma.userSession.delete({
+		where: {
+			userId: session.userId
+		}
+	});
+}
