@@ -37,7 +37,6 @@
 	"dependencies": {
 		"@prisma/client": "^4.13.0",
 		"bcrypt": "^5.1.0",
-		"bootstrap": "^5.2.3",
 		"validator": "^13.9.0"
 	}
 }
