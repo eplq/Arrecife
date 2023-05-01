@@ -6,6 +6,7 @@
 
 	export let user: Omit<User, 'password'>;
 	export let companies: Pick<Company, 'id' | 'name'>[];
+	export let currentCompany: Omit<Company, 'ownerId'> | null;
 </script>
 
 <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark h-100">
@@ -19,15 +20,54 @@
 
 	<hr />
 
-	<ul class="nav nav-pills flex-column mb-auto">
-		<SidebarLink name="Inicio" href="/app" bsIconClass="bi-house-fill" activeExactPath />
-		<SidebarLink name="Vencimientos" href="/app/due" bsIconClass="bi-cash-coin" />
-		<SidebarLink name="Empresas" href="/app/companies" bsIconClass="bi-buildings" />
-		<SidebarLink name="Facturas" href="/app/invoices" bsIconClass="bi-receipt" />
-		<SidebarLink name="Albaranes" href="/app/dispatchNotes" bsIconClass="bi-box2" />
-		<SidebarLink name="Marcas" href="/app/brands" bsIconClass="bi-egg" />
-		<SidebarLink name="Artículos" href="/app/articles" bsIconClass="bi-archive" />
-	</ul>
+	{#if currentCompany}
+		<ul class="nav nav-pills flex-column mb-auto">
+			<SidebarLink
+				name="Inicio"
+				href={`/app/${currentCompany.id}`}
+				bsIconClass="bi-house-fill"
+				activeExactPath
+			/>
+			<SidebarLink
+				name="Vencimientos"
+				href={`/app/${currentCompany.id}/due`}
+				bsIconClass="bi-cash-coin"
+			/>
+			<SidebarLink
+				name="Empresas"
+				href={`/app/${currentCompany.id}/companies`}
+				bsIconClass="bi-buildings"
+			/>
+			<SidebarLink
+				name="Facturas"
+				href={`/app/${currentCompany.id}/invoices`}
+				bsIconClass="bi-receipt"
+			/>
+			<SidebarLink
+				name="Albaranes"
+				href={`/app/${currentCompany.id}/dispatchNotes`}
+				bsIconClass="bi-box2"
+			/>
+			<SidebarLink
+				name="Marcas"
+				href={`/app/${currentCompany.id}/brands`}
+				bsIconClass="bi-egg"
+			/>
+			<SidebarLink
+				name="Artículos"
+				href={`/app/${currentCompany.id}/articles`}
+				bsIconClass="bi-archive"
+			/>
+		</ul>
+	{:else if companies.length}
+		<p>Pulse sobre su nombre y seleccione una empresa, por favor.</p>
+		<p class="mb-auto">
+			Si por el contrario desea añadir una nueva empresa, puede hacerlo
+			<a href="/app/add">aquí</a> o en el botón que hay en el desplegable de su nombre.
+		</p>
+	{:else}
+		<p class="mb-auto">Para empezar, añada una <a href="/app/add">nueva empresa</a>.</p>
+	{/if}
 
 	<hr />
 
@@ -48,7 +88,7 @@
 			{/each}
 			{#if companies.length <= 0}
 				<li>
-					<p class="dropdown-header">No hay compañías</p>
+					<p class="dropdown-header">No hay empresas</p>
 				</li>
 			{/if}
 			<li><hr class="dropdown-divider" /></li>
