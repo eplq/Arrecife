@@ -253,7 +253,7 @@ model Invoice {
   paymentPlanId Int
   paymentPlan   PaymentPlan @relation(fields: [paymentPlanId], references: [id])
 
-  dispatchNoteId Int           @unique
+  dispatchNoteId Int?          @unique
   dispatchNote   DispatchNote? @relation(fields: [dispatchNoteId], references: [id])
 
   taxes    Tax[]
