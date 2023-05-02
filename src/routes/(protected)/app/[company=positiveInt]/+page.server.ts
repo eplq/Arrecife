@@ -8,32 +8,29 @@ export const load = (async ({ params, parent }) => {
 
 	const company = companies.find((item) => item.id.toString() === params.company);
 
-	let currentCompany = null;
-	if (company) {
-		currentCompany = await prisma.company.findFirst({
-			where: {
-				users: {
-					some: {
-						id: user.id
-					}
-				},
-				id: Number(company.id),
-				owner: null
+	if (!company) throw error(404, 'not found');
+
+	const foundCompany = await prisma.company.findFirst({
+		where: {
+			users: {
+				some: {
+					id: user.id
+				}
 			},
-			select: {
-				id: true,
-				name: true,
-				NIF: true,
-				address: true
-			}
-		});
-	}
+			id: company.id,
+			owner: null
+		},
+		select: {
+			id: true,
+			name: true,
+			NIF: true,
+			address: true
+		}
+	});
 
-	if (currentCompany) {
-		return {
-			currentCompany
-		};
-	}
+	if (!foundCompany) throw error(404, 'not found');
 
-	throw error(404, 'not found');
+	return {
+		currentCompany: foundCompany
+	};
 }) satisfies PageServerLoad;
