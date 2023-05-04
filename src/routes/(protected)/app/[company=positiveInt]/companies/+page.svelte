@@ -8,8 +8,6 @@
 	const currentPath = $page.url.pathname;
 </script>
 
-{JSON.stringify(data)}
-
 <h1>Empresas</h1>
 
 <div class="mt-3 d-flex">
@@ -20,9 +18,9 @@
 	<table class="table table-hover table-strip">
 		<thead>
 			<tr>
-				<th scope="col">NIF</th>
+				<th scope="col" class="w-15">NIF</th>
 				<th scope="col">Nombre</th>
-				<th scope="col">Dirección</th>
+				<th scope="col" class="w-55">Dirección</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -33,27 +31,16 @@
 					<td>{company.address}</td>
 				</tr>
 			{/each}
-			{#each data.companies as company}
-				<tr>
-					<th scope="row">{company.NIF}</th>
-					<td>{company.name}</td>
-					<td>{company.address}</td>
-				</tr>
-			{/each}
-			{#each data.companies as company}
-				<tr>
-					<th scope="row">{company.NIF}</th>
-					<td>{company.name}</td>
-					<td>{company.address}</td>
-				</tr>
-			{/each}
-			{#each data.companies as company}
-				<tr>
-					<th scope="row">{company.NIF}</th>
-					<td>{company.name}</td>
-					<td>{company.address}</td>
-				</tr>
-			{/each}
 		</tbody>
 	</table>
 </div>
+
+<style>
+	.w-15 {
+		width: 15%;
+	}
+
+	.w-55 {
+		width: 55%;
+	}
+</style>

@@ -8,6 +8,9 @@ export const load = (async ({ parent }) => {
 	const companies = await prisma.company.findMany({
 		where: {
 			ownerId: currentCompany?.id
+		},
+		orderBy: {
+			name: 'asc'
 		}
 	});
 
