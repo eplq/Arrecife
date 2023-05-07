@@ -58,6 +58,11 @@
 				href={`/app/${currentCompany.id}/articles`}
 				bsIconClass="bi-archive"
 			/>
+			<SidebarLink
+				name="Impuestos"
+				href={`/app/${currentCompany.id}/taxes`}
+				bsIconClass="bi-piggy-bank"
+			/>
 		</ul>
 	{:else if companies.length}
 		<p>Pulse sobre su nombre y seleccione una empresa, por favor.</p>
