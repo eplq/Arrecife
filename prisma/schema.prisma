@@ -133,17 +133,15 @@ model Tax {
 
 // Sección Provider
 model Provider {
-  companyId Int     @unique
+  companyId Int     @id
   company   Company @relation(fields: [companyId], references: [id])
 
-  preferredPaymentPlanId Int
-  preferredPaymentPlan   PaymentPlan @relation(references: [id], fields: [preferredPaymentPlanId])
+  preferredPaymentPlanId Int?
+  preferredPaymentPlan   PaymentPlan? @relation(references: [id], fields: [preferredPaymentPlanId])
 
   preferredGeneralDiscount Int? @default(0)
 
   brands Brand[]
-
-  @@id([companyId, preferredPaymentPlanId])
 }
 
 // Sección Brand
