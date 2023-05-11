@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import TaxRow from '$lib/components/taxes/TaxRow.svelte';
 
 	import type { PageServerData } from './$types';
 
@@ -24,46 +25,20 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each data.taxes as tax}
+			{#if data.taxes.length == 0}
 				<tr>
-					<td class="w-75">
-						<p>{tax.name}</p>
-					</td>
-					<td>
-						<p>{tax.rate}%</p>
-					</td>
-					<td>
-						<div class="dropdown d-flex">
-							<button
-								class="btn btn-outline-primary ms-auto"
-								type="button"
-								data-bs-toggle="dropdown"
-								aria-expanded="false"
-							>
-								<i class="bi bi-three-dots-vertical" />
-							</button>
-							<ul class="dropdown-menu">
-								<li>
-									<a
-										class="dropdown-item"
-										href={`${currentPath}/delete/${tax.id}`}>Eliminar</a
-									>
-								</li>
-							</ul>
-						</div>
-					</td>
+					<td colspan="3">No hay impuestos registrados, prueba a añadir alguno.</td>
 				</tr>
+			{/if}
+			{#each data.taxes as tax}
+				<TaxRow {...tax} />
 			{/each}
 		</tbody>
 	</table>
 </div>
 
 <style>
-	tr td {
-		vertical-align: middle;
-	}
-
-	tr td p {
-		margin: 0;
+	td {
+		text-align: center;
 	}
 </style>
