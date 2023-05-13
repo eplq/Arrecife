@@ -29,6 +29,9 @@
 				<li>
 					<a class="dropdown-item" href={`${currentPath}/delete/${id}`}>Eliminar</a>
 				</li>
+				<li>
+					<a class="dropdown-item" href={`${currentPath}/modify/${id}`}>Modificar</a>
+				</li>
 			</ul>
 		</div>
 	</td>
