@@ -63,6 +63,11 @@
 				href={`/app/${currentCompany.id}/taxes`}
 				bsIconClass="bi-piggy-bank"
 			/>
+			<SidebarLink
+				name="Planes de pago"
+				href={`/app/${currentCompany.id}/paymentPlans`}
+				bsIconClass="bi-calendar-week"
+			/>
 		</ul>
 	{:else if companies.length}
 		<p>Pulse sobre su nombre y seleccione una empresa, por favor.</p>
