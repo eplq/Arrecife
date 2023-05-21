@@ -13,7 +13,7 @@ export const actions: Actions = {
 		if (!name || typeof name !== 'string' || !rateString || typeof rateString !== 'string')
 			return fail(400, { missingData: true });
 
-		const rate = parseInt(rateString);
+		const rate = parseFloat(rateString);
 
 		if (rate < 0 || rate > 100) return fail(400, { name, outOfRange: true });
 

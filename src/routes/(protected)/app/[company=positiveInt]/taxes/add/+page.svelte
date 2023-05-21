@@ -44,6 +44,7 @@
 			min="0"
 			max="100"
 			value="0"
+			step="0.01"
 			name="rate"
 			id="rate"
 		/>
