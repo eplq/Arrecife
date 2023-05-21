@@ -22,7 +22,7 @@ model Person {
 
 model PersonPhone {
   personId Int
-  person   Person @relation(fields: [personId], references: [id])
+  person   Person @relation(onDelete: Cascade, fields: [personId], references: [id])
 
   phone String @db.VarChar(18)
 
@@ -31,7 +31,7 @@ model PersonPhone {
 
 model PersonEmail {
   personId Int
-  person   Person @relation(fields: [personId], references: [id])
+  person   Person @relation(onDelete: Cascade, fields: [personId], references: [id])
 
   email String @db.VarChar(65)
 
@@ -52,7 +52,7 @@ model User {
 
 model UserSession {
   userId Int  @id @unique
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(onDelete: Cascade, fields: [userId], references: [id])
 
   token   String
   expires DateTime
@@ -60,10 +60,10 @@ model UserSession {
 
 model Contact {
   personId Int
-  person   Person @relation(fields: [personId], references: [id])
+  person   Person @relation(onDelete: Cascade, fields: [personId], references: [id])
 
   companyId Int
-  company   Company @relation(fields: [companyId], references: [id])
+  company   Company @relation(onDelete: Cascade, fields: [companyId], references: [id])
 
   role String @db.VarChar(50)
 
@@ -85,7 +85,7 @@ model Company {
   provider     Provider?
   companies    Company[]     @relation(name: "ownership")
   ownerId      Int?
-  owner        Company?      @relation(fields: [ownerId], references: [id], name: "ownership")
+  owner        Company?      @relation(onDelete: Cascade, fields: [ownerId], references: [id], name: "ownership")
 
   dispatchNotes DispatchNote[]
 
@@ -101,7 +101,7 @@ model PaymentPlan {
   name String @db.VarChar(45)
 
   companyId Int
-  company   Company @relation(fields: [companyId], references: [id])
+  company   Company @relation(onDelete: Cascade, fields: [companyId], references: [id])
 
   payments  PaymentPlanPayment[]
   providers Provider[]
@@ -110,7 +110,7 @@ model PaymentPlan {
 
 model PaymentPlanPayment {
   paymentPlanId Int
-  paymentPlan   PaymentPlan @relation(fields: [paymentPlanId], references: [id])
+  paymentPlan   PaymentPlan @relation(onDelete: Cascade, fields: [paymentPlanId], references: [id])
 
   days Int
 
@@ -126,7 +126,7 @@ model Tax {
   rate Int // percentage from 0 to 100
 
   companyId Int
-  company   Company @relation(fields: [companyId], references: [id])
+  company   Company @relation(onDelete: Cascade, fields: [companyId], references: [id])
 
   invoices Invoice[]
 }
@@ -134,10 +134,10 @@ model Tax {
 // Sección Provider
 model Provider {
   companyId Int     @id
-  company   Company @relation(fields: [companyId], references: [id])
+  company   Company @relation(onDelete: Cascade, fields: [companyId], references: [id])
 
   preferredPaymentPlanId Int?
-  preferredPaymentPlan   PaymentPlan? @relation(references: [id], fields: [preferredPaymentPlanId])
+  preferredPaymentPlan   PaymentPlan? @relation(references: [id], onDelete: Cascade, fields: [preferredPaymentPlanId])
 
   preferredGeneralDiscount Int? @default(0)
 
@@ -150,7 +150,7 @@ model Brand {
   name String @db.VarChar(150)
 
   providerId Int
-  provider   Provider  @relation(fields: [providerId], references: [companyId])
+  provider   Provider  @relation(onDelete: Cascade, fields: [providerId], references: [companyId])
   products   Product[]
 }
 
@@ -163,7 +163,7 @@ model Product {
   price Int
 
   brandId Int
-  brand   Brand @relation(fields: [brandId], references: [id])
+  brand   Brand @relation(onDelete: Cascade, fields: [brandId], references: [id])
 
   storagedIn    ProductStock[]
   dispatchNotes ProductsDispatchNotes[]
@@ -183,7 +183,7 @@ model Building {
   type BuildingType @default(STORE)
 
   companyId Int
-  company   Company @relation(fields: [companyId], references: [id])
+  company   Company @relation(onDelete: Cascade, fields: [companyId], references: [id])
 
   productStock ProductStock[]
 }
@@ -195,10 +195,10 @@ enum BuildingType {
 
 model ProductStock {
   buildingId Int
-  building   Building @relation(fields: [buildingId], references: [id])
+  building   Building @relation(onDelete: Cascade, fields: [buildingId], references: [id])
 
   productId String
-  product   Product @relation(fields: [productId], references: [code])
+  product   Product @relation(onDelete: Cascade, fields: [productId], references: [code])
 
   quantity Int @default(0)
 
@@ -213,7 +213,7 @@ model DispatchNote {
   dispatched DateTime @default(now())
 
   companyId Int
-  company   Company @relation(fields: [companyId], references: [id])
+  company   Company @relation(onDelete: Cascade, fields: [companyId], references: [id])
 
   products ProductsDispatchNotes[]
   Invoice  Invoice?
@@ -221,10 +221,10 @@ model DispatchNote {
 
 model ProductsDispatchNotes {
   productCode String
-  product     Product @relation(fields: [productCode], references: [code])
+  product     Product @relation(onDelete: Cascade, fields: [productCode], references: [code])
 
   dispatchNoteId Int
-  dispatchNote   DispatchNote @relation(fields: [dispatchNoteId], references: [id])
+  dispatchNote   DispatchNote @relation(onDelete: Cascade, fields: [dispatchNoteId], references: [id])
 
   quantity Int @default(0)
 
@@ -243,16 +243,16 @@ model Invoice {
   total     Int
 
   sellerId Int
-  seller   Company @relation(fields: [sellerId], references: [id], name: "sellerCompany")
+  seller   Company @relation(onDelete: Cascade, fields: [sellerId], references: [id], name: "sellerCompany")
 
   buyerId Int
-  buyer   Company @relation(fields: [buyerId], references: [id], name: "buyerCompany")
+  buyer   Company @relation(onDelete: Cascade, fields: [buyerId], references: [id], name: "buyerCompany")
 
   paymentPlanId Int
-  paymentPlan   PaymentPlan @relation(fields: [paymentPlanId], references: [id])
+  paymentPlan   PaymentPlan @relation(onDelete: Cascade, fields: [paymentPlanId], references: [id])
 
   dispatchNoteId Int?          @unique
-  dispatchNote   DispatchNote? @relation(fields: [dispatchNoteId], references: [id])
+  dispatchNote   DispatchNote? @relation(onDelete: Cascade, fields: [dispatchNoteId], references: [id])
 
   taxes    Tax[]
   dueDates DueDate[]
@@ -263,7 +263,7 @@ model Invoice {
 
 model DueDate {
   invoiceId Int
-  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  invoice   Invoice @relation(onDelete: Cascade, fields: [invoiceId], references: [id])
 
   date DateTime
 
@@ -274,10 +274,10 @@ model DueDate {
 
 model InvoiceProducts {
   invoiceId Int
-  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  invoice   Invoice @relation(onDelete: Cascade, fields: [invoiceId], references: [id])
 
   productId String
-  product   Product @relation(fields: [productId], references: [code])
+  product   Product @relation(onDelete: Cascade, fields: [productId], references: [code])
 
   quantity Int @default(0)
 
