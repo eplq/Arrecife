@@ -114,7 +114,7 @@ model PaymentPlanPayment {
 
   days Int
 
-  percentage Int
+  percentage Float
 
   @@id([paymentPlanId, days])
 }
@@ -123,7 +123,7 @@ model PaymentPlanPayment {
 model Tax {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(45)
-  rate Int // percentage from 0 to 100
+  rate Float // percentage from 0 to 100
 
   companyId Int
   company   Company @relation(onDelete: Cascade, fields: [companyId], references: [id])
@@ -139,7 +139,7 @@ model Provider {
   preferredPaymentPlanId Int?
   preferredPaymentPlan   PaymentPlan? @relation(references: [id], onDelete: Cascade, fields: [preferredPaymentPlanId])
 
-  preferredGeneralDiscount Int? @default(0)
+  preferredGeneralDiscount Float? @default(0)
 
   brands Brand[]
 }
@@ -238,7 +238,7 @@ model Invoice {
   number    String   @db.VarChar(30)
   date      DateTime
   subtotal  Int
-  discount  Int
+  discount  Float
   netAmount Int
   total     Int
 
