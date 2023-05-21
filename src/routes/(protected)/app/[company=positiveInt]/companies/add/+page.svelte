@@ -99,6 +99,7 @@
 			min="0.0"
 			max="100.0"
 			value="0.0"
+			step="0.01"
 			disabled={!isProvider}
 		/>
 	</div>

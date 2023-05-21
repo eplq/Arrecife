@@ -56,19 +56,25 @@ export const actions: Actions = {
 
 			if (isProvider) {
 				const providerParts: {
-					paymentPlan: number | null;
+					paymentPlan: number | undefined;
 					generalDiscount: number;
 				} = {
-					paymentPlan: null,
+					paymentPlan: undefined,
 					generalDiscount: 0.0
 				};
 
 				if (paymentPlan && typeof paymentPlan === 'string') {
-					const paymentPlanEntity = await tx.paymentPlan.findFirst({
-						where: {
-							id: parseInt(paymentPlan)
-						}
-					});
+					console.log(paymentPlan);
+					const parsedPaymentPlanId = parseInt(paymentPlan);
+
+					let paymentPlanEntity = null;
+					if (!isNaN(parsedPaymentPlanId)) {
+						paymentPlanEntity = await tx.paymentPlan.findFirst({
+							where: {
+								id: parsedPaymentPlanId
+							}
+						});
+					}
 
 					if (paymentPlanEntity) providerParts.paymentPlan = paymentPlanEntity.id;
 				}
@@ -80,11 +86,37 @@ export const actions: Actions = {
 						providerParts.generalDiscount = generalDiscountNumber;
 				}
 
+				console.dir(providerParts);
+
+				if (providerParts.paymentPlan) {
+					await tx.provider.create({
+						data: {
+							company: {
+								connect: {
+									id: newCompany.id
+								}
+							},
+							preferredGeneralDiscount: providerParts.generalDiscount,
+							preferredPaymentPlan: {
+								connect: {
+									id: providerParts.paymentPlan
+								}
+							}
+						}
+					});
+
+					return;
+				}
+
 				await tx.provider.create({
 					data: {
-						companyId: newCompany.id,
+						company: {
+							connect: {
+								id: newCompany.id
+							}
+						},
 						preferredGeneralDiscount: providerParts.generalDiscount,
-						preferredPaymentPlanId: providerParts.paymentPlan
+						preferredPaymentPlan: undefined
 					}
 				});
 			}
