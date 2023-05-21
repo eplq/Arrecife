@@ -21,7 +21,7 @@
 </script>
 
 <li class="nav-item">
-	<a {href} class="nav-link mb-1" class:active aria-current="page">
+	<a {href} class="nav-link mb-1" class:active class:text-dark={active} aria-current="page">
 		<i aria-hidden="true" class={`bi ${bsIconClass} pe-none me-2`} />
 		{name}
 	</a>

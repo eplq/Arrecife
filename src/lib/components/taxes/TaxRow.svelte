@@ -18,7 +18,7 @@
 	<td>
 		<div class="dropdown d-flex">
 			<button
-				class="btn btn-outline-primary ms-auto"
+				class="btn btn-outline-secondary ms-auto"
 				type="button"
 				data-bs-toggle="dropdown"
 				aria-expanded="false"
