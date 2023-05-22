@@ -24,13 +24,23 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each data.companies as company}
+			{#if data.companies.length === 0}
 				<tr>
-					<th scope="row">{company.NIF}</th>
-					<td>{company.name}</td>
-					<td>{company.address}</td>
+					<td colspan="4">
+						<p class="mb-0 text-center">
+							No hay ninguna empresa, prueba a añadir alguna.
+						</p>
+					</td>
 				</tr>
-			{/each}
+			{:else}
+				{#each data.companies as company}
+					<tr>
+						<th scope="row">{company.NIF}</th>
+						<td>{company.name}</td>
+						<td>{company.address}</td>
+					</tr>
+				{/each}
+			{/if}
 		</tbody>
 	</table>
 </div>
