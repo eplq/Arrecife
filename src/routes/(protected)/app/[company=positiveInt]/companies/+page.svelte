@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import CompanyRow from '$lib/components/companies/CompanyRow.svelte';
 
 	import type { PageData } from './$types';
 
@@ -21,6 +22,7 @@
 				<th scope="col" class="w-15">NIF</th>
 				<th scope="col">Nombre</th>
 				<th scope="col" class="w-55">Dirección</th>
+				<th />
 			</tr>
 		</thead>
 		<tbody>
@@ -34,11 +36,7 @@
 				</tr>
 			{:else}
 				{#each data.companies as company}
-					<tr>
-						<th scope="row">{company.NIF}</th>
-						<td>{company.name}</td>
-						<td>{company.address}</td>
-					</tr>
+					<CompanyRow {...company} />
 				{/each}
 			{/if}
 		</tbody>
