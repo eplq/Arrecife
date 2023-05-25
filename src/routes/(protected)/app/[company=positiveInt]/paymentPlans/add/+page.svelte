@@ -1,10 +1,29 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { writable, type Writable } from 'svelte/store';
 
-	const payments: Array<{
-		days: number;
-		percentage: number;
-	}> = [{ days: 0, percentage: 100 }];
+	const payments: Writable<
+		Array<{
+			days: number;
+			percentage: number;
+		}>
+	> = writable([
+		{ days: 0, percentage: 100 },
+		{ days: 0, percentage: 100 },
+		{ days: 0, percentage: 100 },
+		{ days: 0, percentage: 100 },
+		{ days: 0, percentage: 100 },
+		{ days: 0, percentage: 100 },
+		{ days: 0, percentage: 100 },
+		{ days: 0, percentage: 100 },
+		{ days: 0, percentage: 100 },
+		{ days: 0, percentage: 100 },
+		{ days: 0, percentage: 100 }
+	]);
+
+	function deletePayment(paymentIndex: number) {
+		return payments.update((oldPayments) => oldPayments.splice(paymentIndex, 1));
+	}
 </script>
 
 <h1>Añadir una forma de pago</h1>
@@ -19,8 +38,8 @@
 		<label for="payment_1">Pagos</label>
 
 		<ol class="list-unstyled mt-2">
-			{#each payments as payment, i}
-				<li>
+			{#each $payments as _payment, i}
+				<li class="mb-1">
 					<div class="d-flex align-items-center gap-3">
 						<p class="mb-0 ms-2">
 							{i + 1}.
@@ -31,7 +50,7 @@
 							id="payment_days_{i}"
 							min="0"
 							class="form-control"
-							bind:value={payments[i].days}
+							bind:value={$payments[i].days}
 						/>
 
 						<input
@@ -42,8 +61,16 @@
 							min="0"
 							max="100"
 							step="0.01"
-							bind:value={payments[i].percentage}
+							bind:value={$payments[i].percentage}
 						/>
+
+						<button
+							class="btn btn-outline-danger"
+							type="button"
+							on:click={() => deletePayment(i)}
+						>
+							<i class="bi bi-x-lg" />
+						</button>
 					</div>
 				</li>
 			{/each}
