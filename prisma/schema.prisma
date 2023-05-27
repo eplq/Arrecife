@@ -159,6 +159,7 @@ model Product {
   code          String @unique @db.VarChar(40) // EAN
   internal_code String @db.VarChar(30)
 
+  name  String @db.LongText
   cost  Int?
   price Int
 
