@@ -53,6 +53,7 @@
 			id="name"
 			class="form-control"
 			placeholder="Nombre"
+			value={form?.name ?? ''}
 			required
 		/>
 	</div>
@@ -65,6 +66,7 @@
 			id="code"
 			name="code"
 			placeholder="Código de barras"
+			value={form?.code ?? ''}
 			required
 		/>
 	</div>
@@ -77,6 +79,7 @@
 			id="internal_code"
 			name="internal_code"
 			placeholder="Código interno"
+			value={form?.internalCode ?? ''}
 			required
 		/>
 	</div>
@@ -88,6 +91,7 @@
 			class="form-control"
 			id="cost"
 			name="cost"
+			value={form?.cost ?? 0}
 			placeholder="Costo"
 			min="0"
 			step="0.01"
@@ -102,6 +106,7 @@
 			id="price"
 			name="price"
 			placeholder="Precio (sin IVA)"
+			value={form?.price ?? 0}
 			min="0"
 			step="0.01"
 			required
