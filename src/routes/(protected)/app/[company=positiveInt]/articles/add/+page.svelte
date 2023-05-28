@@ -1,12 +1,48 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 
-	import type { PageServerData } from './$types';
+	import type { ActionData, PageServerData } from './$types';
 
 	export let data: PageServerData;
+	export let form: ActionData;
 </script>
 
 <h1>Añadir artículo</h1>
+
+{#if form?.nameMissing}
+	<div class="alert alert-danger d-flex align-items-center" role="alert">
+		<i class="bi bi-exclamation-triangle-fill" />
+		<p class="m-0 ms-2">Por favor, revise el nombre.</p>
+	</div>
+{/if}
+
+{#if form?.codeMissing}
+	<div class="alert alert-danger d-flex align-items-center" role="alert">
+		<i class="bi bi-exclamation-triangle-fill" />
+		<p class="m-0 ms-2">Por favor, revise el código de barras.</p>
+	</div>
+{/if}
+
+{#if form?.internalCodeMissing}
+	<div class="alert alert-danger d-flex align-items-center" role="alert">
+		<i class="bi bi-exclamation-triangle-fill" />
+		<p class="m-0 ms-2">Por favor, revise el código interno.</p>
+	</div>
+{/if}
+
+{#if form?.priceMissing}
+	<div class="alert alert-danger d-flex align-items-center" role="alert">
+		<i class="bi bi-exclamation-triangle-fill" />
+		<p class="m-0 ms-2">Por favor, revise el precio.</p>
+	</div>
+{/if}
+
+{#if form?.brandMissing}
+	<div class="alert alert-danger d-flex align-items-center" role="alert">
+		<i class="bi bi-exclamation-triangle-fill" />
+		<p class="m-0 ms-2">Por favor, revise el marca.</p>
+	</div>
+{/if}
 
 <form method="post" use:enhance>
 	<div class="mb-3">
