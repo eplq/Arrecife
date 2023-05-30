@@ -43,6 +43,8 @@ export const load: PageServerLoad = async ({ params, locals: { user } }) => {
 
 export const actions: Actions = {
 	default: async ({ request, params, locals: { user } }) => {
+		const { company: currentCompany, id } = params;
+
 		const formData = await request.formData();
 
 		const name = formData.get('name');
@@ -53,8 +55,6 @@ export const actions: Actions = {
 
 		if (!provider) return fail(400, { name, missingProvider: true });
 		if (typeof provider !== 'string') return fail(400, { name, missingProvider: true });
-
-		const { company: currentCompany, id } = params;
 
 		const providerId = parseInt(provider);
 		if (!providerId) return fail(400, { name, missingProvider: true });
@@ -77,9 +77,22 @@ export const actions: Actions = {
 
 		if (!providerEntity) return fail(400, { name, missingProvider: true });
 
+		const brandToUpdate = await prisma.brand.findFirst({
+			where: {
+				id: parseInt(id),
+				provider: {
+					company: {
+						ownerId: parseInt(currentCompany)
+					}
+				}
+			}
+		});
+
+		if (!brandToUpdate) return fail(400);
+
 		await prisma.brand.update({
 			where: {
-				id: parseInt(id)
+				id: brandToUpdate.id
 			},
 			data: {
 				name,
