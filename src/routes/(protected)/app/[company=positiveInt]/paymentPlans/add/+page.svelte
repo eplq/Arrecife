@@ -8,7 +8,8 @@
 
 	let errorMsg = '';
 
-	$: console.log(payments);
+	let sum = 0;
+	$: sum = payments.reduce((acc, payment) => acc + Math.round(payment.percentage * 100) / 100, 0);
 
 	function addPayment() {
 		payments = [...payments, { days: newPaymentDays, percentage: newPaymentPercentage }];
@@ -19,26 +20,13 @@
 		if (payments.length <= 1) return;
 		payments = [...payments.slice(0, index), ...payments.slice(index + 1)];
 	}
-
-	function onSubmit(event: SubmitEvent) {
-		event.preventDefault();
-
-		const percentageSum = payments.reduce((sum, { percentage }) => sum + percentage * 100, 0);
-
-		if (percentageSum > 10000 || percentageSum < 0) {
-			errorMsg = 'Los porcentajes deben sumar 100%';
-			return false;
-		}
-
-		return false; // CAMBIAR
-	}
 </script>
 
 <h1>Añadir una forma de pago</h1>
 
 <p class:d-none={!errorMsg} class="text-danger">{errorMsg}</p>
 
-<form method="post" on:submit={onSubmit} use:enhance>
+<form method="post" use:enhance>
 	<div class="mb-3">
 		<label for="name" class="form-label">Nombre</label>
 		<input type="text" name="name" id="name" class="form-control" placeholder="30/60" />
@@ -103,6 +91,9 @@
 	</div>
 
 	<div class="mb-3">
+		<p class:text-success={Math.round(sum) === 100} class:text-danger={Math.round(sum) !== 100}>
+			Suma de porcentaje: {sum}%
+		</p>
 		<input type="submit" value="Añadir forma de pago" class="btn btn-primary" />
 	</div>
 </form>
