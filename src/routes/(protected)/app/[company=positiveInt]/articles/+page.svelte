@@ -28,15 +28,22 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each data.articles as article}
-				<ArticleRow
-					brand={article.brand.name}
-					code={article.code}
-					cost={article.cost}
-					name={article.name}
-					price={article.price}
-				/>
-			{/each}
+			{#if !data.articles.length}
+				<tr>
+					<td colspan="6" class="text-center">No hay artículos</td>
+				</tr>
+			{/if}
+			{#if data.articles.length}
+				{#each data.articles as article}
+					<ArticleRow
+						brand={article.brand.name}
+						code={article.code}
+						cost={article.cost}
+						name={article.name}
+						price={article.price}
+					/>
+				{/each}
+			{/if}
 		</tbody>
 	</table>
 </div>

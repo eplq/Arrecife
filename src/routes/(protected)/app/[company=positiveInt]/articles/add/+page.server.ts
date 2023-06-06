@@ -75,8 +75,8 @@ export const actions: Actions = {
 				name,
 				code,
 				internal_code: internalCode,
-				cost: costInt,
-				price: priceInt,
+				cost: Math.round(costInt!),
+				price: Math.round(priceInt!),
 				brand: { connect: { id: brandEntity.id } }
 			}
 		});
