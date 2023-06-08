@@ -30,7 +30,60 @@ export const load = (async ({ params, parent }) => {
 
 	if (!foundCompany) throw error(404, 'not found');
 
+	const companiesCount = await prisma.company.count({
+		where: {
+			ownerId: foundCompany.id
+		}
+	});
+
+	const invoicesCount = await prisma.invoice.count({
+		where: {
+			OR: [
+				{
+					buyer: {
+						id: foundCompany.id
+					}
+				},
+				{
+					seller: {
+						id: foundCompany.id
+					}
+				}
+			]
+		}
+	});
+
+	const articlesCount = await prisma.product.count({
+		where: {
+			brand: {
+				provider: {
+					company: {
+						owner: {
+							id: foundCompany.id
+						}
+					}
+				}
+			}
+		}
+	});
+
+	const brandsCount = await prisma.brand.count({
+		where: {
+			provider: {
+				company: {
+					owner: {
+						id: foundCompany.id
+					}
+				}
+			}
+		}
+	});
+
 	return {
-		currentCompany: foundCompany
+		currentCompany: foundCompany,
+		companiesCount,
+		invoicesCount,
+		articlesCount,
+		brandsCount
 	};
 }) satisfies PageServerLoad;
