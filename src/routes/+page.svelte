@@ -1,13 +1,13 @@
 <main class="vh-100 d-flex flex-column overflow-hidden">
-	<div class="fv-container" />
-	<nav class="d-flex justify-content-between">
-		<h1 class="ms-2 text-light">Arrecife</h1>
+	<div class="bg-container" />
+	<nav class="d-flex justify-content-between align-items-center">
+		<h1 class="ms-4 text-light fs-3">Arrecife</h1>
 		<ul class="d-flex flex-row list-unstyled gap-3 mt-2 me-2">
 			<li>
-				<a class="btn btn-outline-light btn-sm" href="/auth/login">Iniciar sesión</a>
+				<a class="btn btn-outline-warning border-0" href="/auth/login">Iniciar sesión</a>
 			</li>
 			<li>
-				<a class="btn btn-outline-light btn-sm" href="/auth/register">Registrarse</a>
+				<a class="btn btn-outline-warning" href="/auth/register">Registrarse</a>
 			</li>
 		</ul>
 	</nav>
@@ -67,6 +67,13 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="bubble small-l" />
+	<div class="bubble small" />
+	<div class="bubble s-medium" />
+	<div class="bubble medium" />
+	<div class="bubble large" />
+	<div class="bubble small" />
 </main>
 
 <a class="photo-link" href="https://unsplash.com/es/fotos/2mH5fEFYc5s"
@@ -74,7 +81,7 @@
 >
 
 <style lang="scss">
-	.fv-container {
+	.bg-container {
 		background-image: url('/bg.jpg');
 		background-size: cover;
 
@@ -84,6 +91,8 @@
 		height: 100vh;
 
 		z-index: -1;
+
+		filter: brightness(0.5);
 	}
 
 	.card {
@@ -97,5 +106,185 @@
 		position: absolute;
 		bottom: 1rem;
 		right: 1rem;
+	}
+
+	// https://codepen.io/adtcreate/pen/gyrRzP
+	.bubble {
+		position: absolute;
+		top: 53%;
+		border-radius: 50%;
+		border: 1px solid rgba(255, 255, 255, 0.8);
+	}
+	.small {
+		width: 10px;
+		height: 10px;
+		left: 50%;
+		animation: flow-s 2s linear infinite;
+	}
+
+	.small-l {
+		width: 10px;
+		height: 10px;
+		left: 43%;
+		animation: flow-s-l 0.9s linear infinite;
+	}
+
+	.s-medium {
+		width: 20px;
+		height: 20px;
+		left: 43%;
+		animation: flow-s 1.3s linear infinite;
+	}
+
+	.medium {
+		width: 25px;
+		height: 25px;
+		left: 45%;
+		animation: flow-m 0.8s linear infinite;
+	}
+
+	.large {
+		width: 5px;
+		height: 5px;
+		left: 57%;
+		animation: flow-l 0.7s linear infinite;
+	}
+
+	@keyframes flow-l {
+		0% {
+			top: 53%;
+			left: 57%;
+			opacity: 0;
+		}
+		25% {
+			top: 49%;
+			left: 57.5%;
+			opacity: 1;
+		}
+		50% {
+			left: 58%;
+			opacity: 1;
+		}
+		75% {
+			left: 57.5%;
+			opacity: 1;
+		}
+		100% {
+			top: 32%;
+			left: 57%;
+			opacity: 0;
+		}
+	}
+
+	@keyframes flow-s {
+		0% {
+			top: 53%;
+			left: 50%;
+			opacity: 0;
+		}
+		25% {
+			top: 49%;
+			left: 51%;
+			opacity: 1;
+		}
+		50% {
+			top: 45%;
+			left: 52%;
+			opacity: 1;
+		}
+		75% {
+			top: 41%;
+			left: 51%;
+			opacity: 1;
+		}
+		100% {
+			top: 37%;
+			left: 50%;
+			opacity: 0;
+		}
+	}
+
+	@keyframes flow-s-m {
+		0% {
+			top: 53%;
+			left: 43%;
+			opacity: 0;
+		}
+		25% {
+			top: 49%;
+			left: 42.5%;
+			opacity: 1;
+		}
+		50% {
+			top: 45%;
+			left: 42%;
+			opacity: 1;
+		}
+		75% {
+			top: 41%;
+			left: 42.5%;
+			opacity: 1;
+		}
+		100% {
+			top: 37%;
+			left: 43%;
+			opacity: 0;
+		}
+	}
+
+	@keyframes flow-m {
+		0% {
+			top: 53%;
+			left: 45%;
+			opacity: 0;
+		}
+		25% {
+			top: 48%;
+			left: 44.5%;
+			opacity: 1;
+		}
+		50% {
+			top: 43%;
+			left: 44%;
+			opacity: 1;
+		}
+		75% {
+			top: 38%;
+			left: 44.5%;
+			opacity: 1;
+		}
+		100% {
+			top: 33%;
+			left: 45%;
+			opacity: 0;
+		}
+	}
+
+	@keyframes flow-s-l {
+		0% {
+			top: 53%;
+			left: 43%;
+			opacity: 0;
+		}
+		25% {
+			top: 48%;
+			left: 43.5%;
+			opacity: 1;
+		}
+		50% {
+			top: 43%;
+			left: 44%;
+			opacity: 1;
+		}
+		75% {
+			top: 38%;
+			left: 43.5%;
+			opacity: 1;
+		}
+		100% {
+			top: 33%;
+			left: 43%;
+			opacity: 0;
+		}
 	}
 </style>
