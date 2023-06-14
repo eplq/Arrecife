@@ -9,7 +9,7 @@
 	let discount = 0;
 	let total = 0;
 
-	$: total = (subtotal * (100 - discount)) / 100;
+	$: net = (subtotal * (100 - discount)) / 100;
 </script>
 
 <h1>Añadir una factura</h1>
@@ -77,6 +77,42 @@
 	</div>
 
 	<div class="mb-3">
+		<label for="net" class="form-label">Importe neto</label>
+		<input
+			type="number"
+			name="net"
+			id="net"
+			min="0"
+			max="100"
+			step="0.01"
+			class="form-control"
+			bind:value={net}
+			disabled
+			required
+		/>
+	</div>
+
+	<div class="mb-3">
+		<label for="paymentPlan" class="form-label">Plan de pago</label>
+		<select class="form-select" name="paymentPlan" id="paymentPlan" required>
+			<option>Seleccionar plan de pago</option>
+			{#each data.paymentPlans as paymentPlan}
+				<option value={paymentPlan.id}>{paymentPlan.name}</option>
+			{/each}
+		</select>
+	</div>
+
+	<div class="mb-3">
+		<label for="paymentPlan" class="form-label">Plan de pago</label>
+		<select class="form-select" name="paymentPlan" id="paymentPlan" required>
+			<option>Seleccionar plan de pago</option>
+			{#each data.paymentPlans as paymentPlan}
+				<option value={paymentPlan.id}>{paymentPlan.name}</option>
+			{/each}
+		</select>
+	</div>
+
+	<div class="mb-3">
 		<label for="total" class="form-label">Total</label>
 		<input
 			type="number"
@@ -96,8 +132,8 @@
 		<label for="paymentPlan" class="form-label">Plan de pago</label>
 		<select class="form-select" name="paymentPlan" id="paymentPlan" required>
 			<option>Seleccionar plan de pago</option>
-			{#each data.companies as company}
-				<option value={company.id}>{company.name}</option>
+			{#each data.paymentPlans as paymentPlan}
+				<option value={paymentPlan.id}>{paymentPlan.name}</option>
 			{/each}
 		</select>
 	</div>

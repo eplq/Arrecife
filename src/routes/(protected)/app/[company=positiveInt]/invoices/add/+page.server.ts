@@ -18,7 +18,21 @@ export const load: PageServerLoad = async ({ locals: { user }, parent }) => {
 		}
 	});
 
+	const paymentPlans = await prisma.paymentPlan.findMany({
+		where: {
+			company: {
+				id: currentCompany?.id,
+				users: {
+					some: {
+						id: user?.id
+					}
+				}
+			}
+		}
+	});
+
 	return {
-		companies
+		companies,
+		paymentPlans
 	};
 };
