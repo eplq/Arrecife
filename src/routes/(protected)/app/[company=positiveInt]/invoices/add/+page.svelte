@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import type { PaymentPlan, PaymentPlanPayment } from '@prisma/client';
+	import Select from 'svelte-select';
 
 	import type { PageServerData } from './$types';
 
@@ -7,9 +9,37 @@
 
 	let subtotal = 0;
 	let discount = 0;
+	let net = 0;
 	let total = 0;
 
 	$: net = (subtotal * (100 - discount)) / 100;
+
+	let selectedTaxes: { label: string; index: number; value: number }[] = [];
+
+	let totalTaxSum = 0;
+
+	$: totalTaxSum = selectedTaxes
+		? selectedTaxes.reduce((sum, tax) => {
+				const realTax = data.taxes.find((item) => item.id === tax.value);
+				if (!realTax) return sum;
+
+				return sum + realTax.rate;
+		  }, 0)
+		: 0;
+
+	$: total = net * (1 + totalTaxSum / 100);
+
+	let selectedPaymentPlanId: number;
+	let selectedDateString: string;
+	let selectedDate: Date = new Date();
+
+	$: selectedDate = selectedDateString ? new Date(selectedDateString) : selectedDate;
+
+	let selectedPaymentPlan: PaymentPlan & {
+		payments: PaymentPlanPayment[];
+	};
+
+	let dueDates: { date: Date; amount: number }[] = [];
 </script>
 
 <h1>Añadir una factura</h1>
@@ -22,7 +52,15 @@
 
 	<div class="mb-3">
 		<label for="date" class="form-label">Fecha de emisión</label>
-		<input type="date" class="form-control" name="date" id="date" required />
+		<input
+			type="date"
+			class="form-control"
+			name="date"
+			id="date"
+			bind:value={selectedDateString}
+			required
+		/>
+		{selectedDate}
 	</div>
 
 	<div class="mb-3">
@@ -62,7 +100,7 @@
 	</div>
 
 	<div class="mb-3">
-		<label for="discount" class="form-label">Descuento</label>
+		<label for="discount" class="form-label">Descuento (%)</label>
 		<input
 			type="number"
 			name="discount"
@@ -93,23 +131,23 @@
 	</div>
 
 	<div class="mb-3">
-		<label for="paymentPlan" class="form-label">Plan de pago</label>
-		<select class="form-select" name="paymentPlan" id="paymentPlan" required>
-			<option>Seleccionar plan de pago</option>
-			{#each data.paymentPlans as paymentPlan}
-				<option value={paymentPlan.id}>{paymentPlan.name}</option>
-			{/each}
-		</select>
-	</div>
+		<label for="paymentPlan" class="form-label">Impuestos</label>
+		<Select
+			items={data.taxes.map((tax, index) => {
+				return {
+					index,
+					value: tax.id,
+					label: tax.name
+				};
+			})}
+			name="taxes"
+			id="taxes"
+			bind:value={selectedTaxes}
+			multiple
+			placeholder="Seleccione los impuestos a aplicar"
+		/>
 
-	<div class="mb-3">
-		<label for="paymentPlan" class="form-label">Plan de pago</label>
-		<select class="form-select" name="paymentPlan" id="paymentPlan" required>
-			<option>Seleccionar plan de pago</option>
-			{#each data.paymentPlans as paymentPlan}
-				<option value={paymentPlan.id}>{paymentPlan.name}</option>
-			{/each}
-		</select>
+		<p class="mt-2">Suma de los tipos impositivos seleccionados: {totalTaxSum} %</p>
 	</div>
 
 	<div class="mb-3">
@@ -130,11 +168,27 @@
 
 	<div class="mb-3">
 		<label for="paymentPlan" class="form-label">Plan de pago</label>
-		<select class="form-select" name="paymentPlan" id="paymentPlan" required>
-			<option>Seleccionar plan de pago</option>
+		<select
+			class="form-select"
+			bind:value={selectedPaymentPlanId}
+			name="paymentPlan"
+			id="paymentPlan"
+			required
+		>
 			{#each data.paymentPlans as paymentPlan}
 				<option value={paymentPlan.id}>{paymentPlan.name}</option>
 			{/each}
 		</select>
+
+		<p class="mt-2 mb-0">Vencimientos que se generarán</p>
+		<ul>
+			{#each dueDates as dueDate}
+				<li>
+					<p>{dueDate.date.toLocaleDateString('es-ES')} - {dueDate.amount} &euro;</p>
+				</li>
+			{/each}
+		</ul>
 	</div>
+
+	<input type="submit" value="Añadir" class="btn btn-primary" />
 </form>

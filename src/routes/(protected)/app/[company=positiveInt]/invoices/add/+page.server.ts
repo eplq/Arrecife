@@ -28,11 +28,28 @@ export const load: PageServerLoad = async ({ locals: { user }, parent }) => {
 					}
 				}
 			}
+		},
+		include: {
+			payments: true
+		}
+	});
+
+	const taxes = await prisma.tax.findMany({
+		where: {
+			company: {
+				id: currentCompany?.id,
+				users: {
+					some: {
+						id: user?.id
+					}
+				}
+			}
 		}
 	});
 
 	return {
 		companies,
-		paymentPlans
+		paymentPlans,
+		taxes
 	};
 };
