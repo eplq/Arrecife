@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { addDays } from '$lib/utils/date';
 	import type { PaymentPlan, PaymentPlanPayment } from '@prisma/client';
 	import Select from 'svelte-select';
 
@@ -27,19 +28,35 @@
 		  }, 0)
 		: 0;
 
+	let taxesBreakdown: { name: string; amount: number }[] = [];
+
 	$: total = net * (1 + totalTaxSum / 100);
 
-	let selectedPaymentPlanId: number;
 	let selectedDateString: string;
 	let selectedDate: Date = new Date();
 
 	$: selectedDate = selectedDateString ? new Date(selectedDateString) : selectedDate;
 
-	let selectedPaymentPlan: PaymentPlan & {
-		payments: PaymentPlanPayment[];
-	};
+	let selectedPaymentPlanId: number;
+	let selectedPaymentPlan:
+		| (PaymentPlan & {
+				payments: PaymentPlanPayment[];
+		  })
+		| null;
+
+	$: selectedPaymentPlan =
+		data.paymentPlans.find((paymentPlan) => paymentPlan.id === selectedPaymentPlanId) ?? null;
 
 	let dueDates: { date: Date; amount: number }[] = [];
+
+	$: dueDates = selectedPaymentPlan
+		? selectedPaymentPlan.payments.map((payment) => {
+				return {
+					date: addDays(payment.days, selectedDate),
+					amount: (total * payment.percentage) / 100
+				};
+		  })
+		: [];
 </script>
 
 <h1>Añadir una factura</h1>
@@ -60,7 +77,6 @@
 			bind:value={selectedDateString}
 			required
 		/>
-		{selectedDate}
 	</div>
 
 	<div class="mb-3">
@@ -148,6 +164,8 @@
 		/>
 
 		<p class="mt-2">Suma de los tipos impositivos seleccionados: {totalTaxSum} %</p>
+
+		<ul />
 	</div>
 
 	<div class="mb-3">
@@ -181,6 +199,7 @@
 		</select>
 
 		<p class="mt-2 mb-0">Vencimientos que se generarán</p>
+
 		<ul>
 			{#each dueDates as dueDate}
 				<li>
