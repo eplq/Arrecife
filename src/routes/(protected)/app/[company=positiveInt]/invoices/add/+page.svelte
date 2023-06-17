@@ -9,8 +9,8 @@
 	export let data: PageServerData;
 	export let form: ActionData;
 
-	let subtotal = Number(form?.subtotal) ?? 0;
-	let discount = Number(form?.discount) ?? 0;
+	let subtotal = 0;
+	let discount = 0;
 	let net = 0;
 	let total = 0;
 
