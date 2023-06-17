@@ -4,12 +4,13 @@
 	import type { PaymentPlan, PaymentPlanPayment } from '@prisma/client';
 	import Select from 'svelte-select';
 
-	import type { PageServerData } from './$types';
+	import type { ActionData, PageServerData } from './$types';
 
 	export let data: PageServerData;
+	export let form: ActionData;
 
-	let subtotal = 0;
-	let discount = 0;
+	let subtotal = Number(form?.subtotal) ?? 0;
+	let discount = Number(form?.discount) ?? 0;
 	let net = 0;
 	let total = 0;
 
@@ -40,12 +41,12 @@
 
 	$: total = net * (1 + totalTaxSum / 100);
 
-	let selectedDateString: string;
+	let selectedDateString: string = (form?.date as string) ?? '';
 	let selectedDate: Date = new Date();
 
 	$: selectedDate = selectedDateString ? new Date(selectedDateString) : selectedDate;
 
-	let selectedPaymentPlanId: number;
+	let selectedPaymentPlanId: number = Number(form?.paymentPlan as string) ?? '';
 	let selectedPaymentPlan:
 		| (PaymentPlan & {
 				payments: PaymentPlanPayment[];
@@ -72,7 +73,14 @@
 <form method="post" use:enhance>
 	<div class="mb-3">
 		<label for="number" class="form-label">Número de factura</label>
-		<input type="text" class="form-control" name="number" id="number" required />
+		<input
+			type="text"
+			class="form-control"
+			name="number"
+			id="number"
+			required
+			value={form?.number ?? ''}
+		/>
 	</div>
 
 	<div class="mb-3">
@@ -108,7 +116,13 @@
 
 	<div class="mb-3">
 		<label for="counterpart" class="form-label">Contraparte</label>
-		<select class="form-select" name="counterpart" id="counterpart" required>
+		<select
+			class="form-select"
+			name="counterpart"
+			id="counterpart"
+			required
+			value={form?.counterpart ?? ''}
+		>
 			<option>Seleccionar contraparte</option>
 			{#each data.companies as company}
 				<option value={company.id}>{company.name}</option>
