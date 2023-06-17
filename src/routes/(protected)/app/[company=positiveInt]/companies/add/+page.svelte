@@ -75,7 +75,7 @@
 			class="form-check-input"
 			bind:checked={isProvider}
 		/>
-		<label for="isProvider" class="form-check-label">Es un proveedor (por hacer)</label>
+		<label for="isProvider" class="form-check-label">Es un proveedor</label>
 	</div>
 
 	<div class="mb-3">
