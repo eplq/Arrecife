@@ -90,12 +90,19 @@
 	<div class="mb-3">
 		<label for="date" class="form-label">Tipo</label>
 		<div class="form-check">
-			<input class="form-check-input" type="radio" name="tipo" id="tipoVenta" />
-			<label class="form-check-label" for="tipoVenta">Venta</label>
+			<input class="form-check-input" type="radio" name="type" id="typeSell" value="sell" />
+			<label class="form-check-label" for="typeSell">Venta</label>
 		</div>
 		<div class="form-check">
-			<input class="form-check-input" type="radio" name="tipo" id="tipoCompra" checked />
-			<label class="form-check-label" for="tipoCompra">Compra</label>
+			<input
+				class="form-check-input"
+				type="radio"
+				name="type"
+				id="typeBuy"
+				value="buy"
+				checked
+			/>
+			<label class="form-check-label" for="typeBuy">Compra</label>
 		</div>
 	</div>
 
