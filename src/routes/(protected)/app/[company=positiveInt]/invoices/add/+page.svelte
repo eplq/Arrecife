@@ -30,6 +30,14 @@
 
 	let taxesBreakdown: { name: string; amount: number }[] = [];
 
+	$: taxesBreakdown = selectedTaxes
+		? selectedTaxes.map((tax) => {
+				const realTax = data.taxes.find((item) => item.id === tax.value);
+
+				return { name: realTax!.name, amount: (net * realTax!.rate) / 100 };
+		  })
+		: [];
+
 	$: total = net * (1 + totalTaxSum / 100);
 
 	let selectedDateString: string;
@@ -165,7 +173,13 @@
 
 		<p class="mt-2">Suma de los tipos impositivos seleccionados: {totalTaxSum} %</p>
 
-		<ul />
+		<ul>
+			{#each taxesBreakdown as tax}
+				<li>
+					<p>{tax.name} - {tax.amount} €</p>
+				</li>
+			{/each}
+		</ul>
 	</div>
 
 	<div class="mb-3">
