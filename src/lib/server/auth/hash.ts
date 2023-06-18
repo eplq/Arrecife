@@ -1,4 +1,6 @@
-import { genSalt, hash } from 'bcryptjs';
+import bcryptjs from 'bcryptjs';
+
+const { genSalt, hash } = bcryptjs; // commonjs hack for building with vite
 
 const SALT_ROUNDS = 10;
 

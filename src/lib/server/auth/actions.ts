@@ -1,10 +1,12 @@
 import type { PrismaClient, User } from '@prisma/client';
-import { compare } from 'bcryptjs';
+import bcryptjs from 'bcryptjs';
 import isEmail from 'validator/lib/isEmail';
 
 import generateHash from './hash';
 import addTime from './time';
 import generateToken from './utils';
+
+const { compare } = bcryptjs; // commonjs hack for building with vite
 
 export async function registerUser(
 	userInput: {
