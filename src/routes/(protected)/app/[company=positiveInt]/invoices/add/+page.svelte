@@ -116,13 +116,7 @@
 
 	<div class="mb-3">
 		<label for="counterpart" class="form-label">Contraparte</label>
-		<select
-			class="form-select"
-			name="counterpart"
-			id="counterpart"
-			required
-			value={form?.counterpart ?? ''}
-		>
+		<select class="form-select" name="counterpart" id="counterpart" required>
 			<option>Seleccionar contraparte</option>
 			{#each data.companies as company}
 				<option value={company.id}>{company.name}</option>

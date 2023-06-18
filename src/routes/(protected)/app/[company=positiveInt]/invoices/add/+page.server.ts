@@ -1,5 +1,7 @@
 import prisma from '$lib/server/prisma';
-import { fail } from '@sveltejs/kit';
+import { addDays } from '$lib/utils/date';
+import type { Invoice } from '@prisma/client';
+import { fail, redirect } from '@sveltejs/kit';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -56,7 +58,7 @@ export const load: PageServerLoad = async ({ locals: { user }, parent }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ locals: { user }, request }) => {
+	default: async ({ locals: { user }, request, params }) => {
 		if (!user) return fail(401);
 
 		const formData = await request.formData();
@@ -152,6 +154,137 @@ export const actions: Actions = {
 				paymentPlanMissing: true
 			});
 
-		await prisma.$transaction(async (tx) => {});
+		const currentCompanyEntity = await prisma.company.findFirst({
+			where: {
+				id: parseInt(params.company),
+				users: {
+					some: {
+						id: user.id
+					}
+				}
+			}
+		});
+
+		if (!currentCompanyEntity) return fail(400);
+
+		const counterpartEntity = await prisma.company.findFirst({
+			where: {
+				id: parseInt(counterpart),
+				owner: {
+					users: {
+						some: {
+							id: user.id
+						}
+					}
+				}
+			}
+		});
+
+		if (!counterpartEntity) return fail(400);
+
+		const paymentPlanEntity = await prisma.paymentPlan.findFirst({
+			where: {
+				id: parseInt(paymentPlan),
+				company: {
+					users: {
+						some: {
+							id: user.id
+						}
+					}
+				}
+			},
+			include: {
+				payments: true
+			}
+		});
+
+		if (!paymentPlanEntity) return fail(400);
+
+		const taxesEntities = await prisma.tax.findMany({
+			where: {
+				id: {
+					in: [...parsedTaxes.map((parsedTax) => parsedTax.value)]
+				},
+				company: {
+					users: {
+						some: {
+							id: user.id
+						}
+					}
+				}
+			}
+		});
+
+		const subtotalFloat = parseFloat(subtotal);
+		const discountFloat = parseFloat(discount) / 100;
+		const netAmount = subtotalFloat * (1 - discountFloat);
+
+		const total =
+			netAmount + taxesEntities.reduce((sum, tax) => sum + (netAmount * tax.rate) / 100, 0);
+
+		const dateObject = new Date(date);
+
+		await prisma.$transaction(async (tx) => {
+			let newInvoice: Invoice;
+			if (type === 'sell') {
+				newInvoice = await tx.invoice.create({
+					data: {
+						number,
+						date: dateObject,
+						sellerId: currentCompanyEntity.id,
+						buyerId: counterpartEntity.id,
+						subtotal: parseInt((subtotalFloat * 100).toString()),
+						discount: parseInt((discountFloat * 100).toString()),
+						netAmount: parseInt((netAmount * 100).toString()),
+						total: parseInt((total * 100).toString()),
+						paymentPlanId: paymentPlanEntity.id,
+						taxes: {
+							connect: taxesEntities.map((tax) => {
+								return {
+									id: tax.id
+								};
+							})
+						}
+					}
+				});
+			} else {
+				// type === 'buy'
+				newInvoice = await tx.invoice.create({
+					data: {
+						number,
+						date: dateObject,
+						sellerId: counterpartEntity.id,
+						buyerId: currentCompanyEntity.id,
+						subtotal: parseInt((subtotalFloat * 100).toString()),
+						discount: parseInt((discountFloat * 100).toString()),
+						netAmount: parseInt((netAmount * 100).toString()),
+						total: parseInt((total * 100).toString()),
+						paymentPlanId: paymentPlanEntity.id,
+						taxes: {
+							connect: taxesEntities.map((tax) => {
+								return {
+									id: tax.id
+								};
+							})
+						}
+					}
+				});
+			}
+
+			await tx.dueDate.createMany({
+				data: paymentPlanEntity.payments.map((payment) => {
+					const paymentDate = addDays(payment.days, dateObject);
+					const amount = (payment.percentage / 100) * total;
+
+					return {
+						amount: parseInt((amount * 100).toString()),
+						date: paymentDate,
+						invoiceId: newInvoice.id
+					};
+				})
+			});
+		});
+
+		throw redirect(302, `/app/${params.company}/invoices`);
 	}
 };
