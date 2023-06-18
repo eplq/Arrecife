@@ -1,5 +1,5 @@
 import type { PrismaClient, User } from '@prisma/client';
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 import isEmail from 'validator/lib/isEmail';
 
 import generateHash from './hash';
