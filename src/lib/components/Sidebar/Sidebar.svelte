@@ -44,11 +44,6 @@
 				bsIconClass="bi-receipt"
 			/>
 			<SidebarLink
-				name="Albaranes"
-				href={`/app/${currentCompany.id}/dispatchNotes`}
-				bsIconClass="bi-box2"
-			/>
-			<SidebarLink
 				name="Marcas"
 				href={`/app/${currentCompany.id}/brands`}
 				bsIconClass="bi-egg"
