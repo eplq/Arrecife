@@ -13,8 +13,8 @@
 <tr>
 	<th><p>{invoice.number}</p></th>
 	<td><p>{invoice.date.toLocaleDateString('es-ES')}</p></td>
-	<td><p>{invoice.netAmount} &euro;</p></td>
-	<td><p>{invoice.total} &euro;</p></td>
+	<td><p>{(invoice.netAmount / 100).toFixed(2)} &euro;</p></td>
+	<td><p>{(invoice.total / 100).toFixed(2)} &euro;</p></td>
 	<td><p>{invoice.seller.name}</p></td>
 	<td><p>{invoice.buyer.name}</p></td>
 	<td>
