@@ -1,38 +1,53 @@
-# create-svelte
+# Arrecife
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Arrecife es un ERP básico para gestionar las finanzas de empreas pequeñas o de particulares. Gestiona lo siguiente:
 
-## Creating a project
+- Empresas
+- Facturas y sus vencimientos
+- Marcas
+- Artículos
+- Impuestos
+- Planes de pago
 
-If you're seeing this, you've probably already done this step. Congrats!
+Las facturas dependen de los impuestos y los planes de pago, las marcas dependen de las empresas (que sean proveedores) los artículos que dependen de las marcas.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+La idea era dividir el proyecto en tres fases:
 
-# create a new project in my-app
-npm create svelte@latest my-app
+- Gestión básica (facturas, planes de pago, impuestos y vencimientos).
+- Gestión de inventario (artículos, marcas, proveedores, almacenes y tiendas)
+- Gestión de venta (TPV, vendedores y clientes)
+
+Sólo ha dado tiempo a completar la primera fase, y la segunda parcialmente.
+
+Este proyecto es el Trabajo de fin de Ciclo para el Grado Superior de Desarrollo de Aplicaciones Web.
+
+## Tecnologías usadas
+
+Se ha usado [SvelteKit](https://kit.svelte.dev) y [Prisma](https://prisma.io) en el lado del servidor, y en el lado del cliente [Bootstrap 5](https://getbootstrap.com) con [pequeñas modificaciones](./src/lib/custom.scss) relativas a los colores.
+
+Para la base de datos se ha optado por MySQL funcionando en un contenedor porque es literalmente un comando hacerlo funcionar:
+
+```sh
+docker run -p 3306:3306 -e "MYSQL_ROOT_PASSWORD=<aqui la contraseña del usuario root>" -d mysql
 ```
 
-## Developing
+Gracias al uso de Prisma, se puede usar cualquier motor que sea compatible.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Desarrollo
 
-```bash
+Para empezar, clone el repositorio, descargue las dependencias, configure el *.env* y ejecute las migraciones:
+
+```sh
+git clone https://github.com/eplq/Arrecife.git
+cd Arrecife
+npm i
+cp .env.example .env
+npx prisma migrate dev
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+Y ya podría abrir su editor para hacer lo que precise.
 
-To create a production version of your app:
+## Licencia
 
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Este software no tiene **níngun tipo de garantía**. Está bajo la licencia [GNU GPLv3](./LICENSE).
