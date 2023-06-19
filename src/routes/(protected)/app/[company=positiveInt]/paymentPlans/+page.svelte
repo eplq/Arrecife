@@ -27,7 +27,9 @@
 		<tbody>
 			{#if data.paymentPlans.length == 0}
 				<tr>
-					<td colspan="3">No hay planes de pago registrados, prueba a añadir alguno.</td>
+					<td colspan="3" class="text-center"
+						>No hay planes de pago registrados, prueba a añadir alguno.</td
+					>
 				</tr>
 			{/if}
 			{#each data.paymentPlans as paymentPlan}
